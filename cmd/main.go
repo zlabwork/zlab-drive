@@ -42,7 +42,7 @@ func main() {
 	r.HandleFunc("/file/{name:[0-9a-zA-Z]+}", app.DefaultHandler).Methods("GET")
 	r.HandleFunc("/do/{name:[0-9a-zA-Z]+}", app.DefaultHandler).Methods("POST")
 	r.HandleFunc("/upload", app.DefaultHandler).Methods("PUT")
-	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(dir))))
+	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("../"+dir))))
 
 	srv := &http.Server{
 		Handler:      r,
