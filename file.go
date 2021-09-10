@@ -2,11 +2,15 @@ package drive
 
 type File struct {
 	Id        int64
+	UserId    int64
+	Uuid      string
 	Name      string
 	MimeType  string
-	UserId    int64
 	Size      int
 	Hash      string
+	Parent    int64
+	Path      string
+	Attr      string
 	FileCtime int64
 	Ctime     int64
 	Mtime     int64

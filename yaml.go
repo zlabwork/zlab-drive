@@ -9,6 +9,7 @@ type Yaml struct {
 			Port string
 			User string
 			Pass string
+			Name string
 		}
 	}
 }
