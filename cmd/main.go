@@ -38,6 +38,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", app.DefaultHandler)
+	r.HandleFunc("/home", app.HomeHandler)
 	r.HandleFunc("/folders/{name:[0-9a-zA-Z_-]+}", app.DefaultHandler).Methods("GET")
 	r.HandleFunc("/file/{name:[0-9a-zA-Z]+}", app.DefaultHandler).Methods("GET")
 	r.HandleFunc("/do/{name:[0-9a-zA-Z]+}", app.DefaultHandler).Methods("POST")
