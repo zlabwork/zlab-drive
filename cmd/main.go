@@ -4,6 +4,8 @@ import (
 	"context"
 	"drive"
 	"drive/app"
+	"drive/app/api"
+	"drive/app/middleware"
 	"flag"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -37,9 +39,11 @@ func main() {
 	flag.Parse()
 
 	r := mux.NewRouter()
+	r.Use(middleware.LoggingMiddleware)
 	r.HandleFunc("/", app.DefaultHandler)
 	r.HandleFunc("/home", app.HomeHandler)
 	r.HandleFunc("/folders/{name:[0-9a-zA-Z_-]+}", app.DefaultHandler).Methods("GET")
+	r.HandleFunc("/files/{name:[0-9a-zA-Z]+}", api.FilesHandler).Methods("GET")
 	r.HandleFunc("/file/{name:[0-9a-zA-Z]+}", app.DefaultHandler).Methods("GET")
 	r.HandleFunc("/do/{name:[0-9a-zA-Z]+}", app.DefaultHandler).Methods("POST")
 	r.HandleFunc("/upload", app.DefaultHandler).Methods("PUT")
