@@ -2,6 +2,7 @@ package api
 
 import (
 	"drive"
+	"drive/app/msg"
 	"drive/srv/db/mysql"
 	"net/http"
 )
@@ -10,10 +11,9 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 	fs, err := mysql.NewFileService()
 	data, err := fs.ListFiles(0, 0, 0)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
 		output := drive.JsonError{
-			Code:    http.StatusInternalServerError,
-			Message: "error",
+			Code:    msg.Err,
+			Message: msg.Text(msg.Err),
 			Refer:   "https://zlab.dev",
 		}
 		drive.ResponseJson(w, output)
@@ -21,9 +21,9 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	output := drive.JsonOK{
-		Code: http.StatusOK,
-		Data: data,
+		Code:    msg.OK,
+		Message: msg.Text(msg.OK),
+		Data:    data,
 	}
-	w.WriteHeader(http.StatusOK)
 	drive.ResponseJson(w, output)
 }
