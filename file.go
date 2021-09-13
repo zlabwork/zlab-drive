@@ -17,6 +17,14 @@ type File struct {
 	Mtime     int64  `json:"mtime"`
 }
 
+type Attr struct {
+	Favorite bool
+	Color    string
+	Width    int
+	Height   int
+	Duration int
+}
+
 type FileService interface {
 	File(id int64) (*File, error)
 	Files() ([]*File, error)

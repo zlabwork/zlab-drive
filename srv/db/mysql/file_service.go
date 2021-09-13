@@ -9,9 +9,9 @@ type FileService struct {
 	h *handle
 }
 
-func (f *FileService) ListFiles(parent int64, offset, number int) ([]*drive.File, error) {
+func (f *FileService) ListFiles(parent int64, offset, size int) ([]*drive.File, error) {
 
-	rows, err := f.h.Conn.Query("SELECT `id`, `uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `ctime`, `mtime` FROM `zd_files` WHERE `parent` = ? LIMIT 100", parent)
+	rows, err := f.h.Conn.Query("SELECT `id`, `uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `ctime`, `mtime` FROM `zd_files` WHERE `parent` = ? LIMIT ?,?", parent, offset, size)
 	if err != nil {
 		return nil, err
 	}
@@ -47,11 +47,11 @@ func (f *FileService) GetFile(id int64) (*drive.File, error) {
 }
 
 func (f *FileService) CreateFile(file *drive.File) error {
-	stmt, err := f.h.Conn.Prepare("INSERT INTO `zd_files` (`uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `ctime`, `mtime`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)")
+	stmt, err := f.h.Conn.Prepare("INSERT INTO `zd_files` (`uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `f_mtime`, `ctime`, `mtime`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)")
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(file.UserId, file.Uuid, file.Name, file.MimeType, file.Size, file.Hash, file.Parent, file.Path, file.Attr, file.FileCtime, file.Ctime, file.Mtime)
+	_, err = stmt.Exec(file.UserId, file.Uuid, file.Name, file.MimeType, file.Size, file.Hash, file.Parent, file.Path, file.Attr, file.FileCtime, file.FileMtime, file.Ctime, file.Mtime)
 	if err != nil {
 		return err
 	}
