@@ -18,6 +18,15 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 	offset, _ := strconv.Atoi(vars.Get("offset"))
 
 	fs, err := mysql.NewFileService()
+	if err != nil {
+		output := drive.JsonError{
+			Code:    msg.ErrDB,
+			Message: msg.Text(msg.ErrDB),
+			Refer:   "https://zlab.dev",
+		}
+		drive.ResponseJson(w, output)
+		return
+	}
 	data, err := fs.ListFiles(parent, offset, size)
 	if err != nil {
 		output := drive.JsonError{
