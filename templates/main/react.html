@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>React Dev Test</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-2">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="list-group">
+                        <button type="button" class="list-group-item list-group-item-action active">Active item</button>
+                        <button type="button" class="list-group-item list-group-item-action">Item</button>
+                        <button type="button" class="list-group-item list-group-item-action disabled">Disabled item</button>
+                    </div>
+                </div>
+            </div>
+            <div id="sidebar"></div>
+        </div>
+        <div class="col-md-10">
+            <div id="breadcrumb"></div>
+            <img src="https://oktools.net/ph/200x200?bg=566270&fg=E0E3DA" class="rounded" alt="...">
+            <img src="https://oktools.net/ph/200x200?bg=566270&fg=E0E3DA" class="rounded" alt="...">
+            <img src="https://oktools.net/ph/200x200?bg=566270&fg=E0E3DA" class="rounded" alt="...">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div id="example"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/babel">
+
+    const element = <div>
+        <h1>测试React</h1>
+        <a href="https://www.runoob.com/react/react-tutorial.html" target="_blank">学习链接 {1000 + 24}</a>
+        {/*顶顶顶顶*/}
+    </div>
+    ReactDOM.render(
+        element,
+        document.getElementById('example')
+    );
+
+    class Sidebar extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {date: new Date()};
+        }
+        render() {
+            return (
+                <h3>左侧导航 {this.state.date.toLocaleTimeString()} </h3>
+            );
+        }
+    }
+
+    ReactDOM.render(
+        <Sidebar/>,
+        document.getElementById('sidebar')
+    );
+
+
+    class Breadcrumb extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {date: new Date()};
+
+            // 这边绑定是必要的，这样 `this` 才能在回调函数中使用
+            this.handleClick = this.handleClick.bind(this);
+        }
+
+        componentDidMount(){
+            console.log("execute right now")
+        }
+
+        handleClick(name, event) {
+            console.log(name)
+            this.setState(prevState => ({
+                date: new Date()
+            }));
+            console.log(this.state)
+            utilsBox.httpRequest("get", "/files/xxx?id=123654", {"aaa": "bbb"})
+        }
+
+        render() {
+            return (
+                <ul className="nav">
+                    <li className="nav-item">
+                        <a className="nav-link active" href="#" onClick={this.handleClick.bind(this, "Name-A")}>目录A</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" onClick={this.handleClick.bind(this, "Name-B")}>目录B</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link disabled">目录C {this.state.date.toLocaleTimeString()}</a>
+                    </li>
+                </ul>
+            );
+        }
+    }
+
+    ReactDOM.render(
+        <Breadcrumb/>,
+        document.getElementById('breadcrumb')
+    );
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.development.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.development.js"></script>
+<!-- 生产环境中不建议使用 -->
+<script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script type="text/babel" src="/assets/js/main.js"></script>
+</body>
+</html>
