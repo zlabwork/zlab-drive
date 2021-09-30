@@ -97,14 +97,19 @@ class FileView extends React.Component {
 
     render() {
         const element = this.state.files.map((item) =>
-            <figure key={item.id} className="figure"
-                    onClick={this.handleClick.bind(this, item.id)}
-                    onDoubleClick={this.handleDoubleClick.bind(this, item.uuid)}>
-                <img src="/holder/200x200" className="figure-img img-fluid rounded"/>
-                <figcaption className="figure-caption">{item.name}</figcaption>
-            </figure>
+            <div className="col"
+                 key={item.id}
+                 onClick={this.handleClick.bind(this, item.id)}
+                 onDoubleClick={this.handleDoubleClick.bind(this, item.uuid)}>
+                <div className="card h-100">
+                    <img src="/holder/200x200" className="card-img-top" alt="..."/>
+                    <div className="card-body">
+                        <p className="card-text">{item.name}</p>
+                    </div>
+                </div>
+            </div>
         );
-        return <div className="col-md-12">{element}</div>
+        return <div className="row row-cols-1 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4">{element}</div>
     }
 }
 
