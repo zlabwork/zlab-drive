@@ -109,30 +109,8 @@
 
         </div>
         <div class="col-md-10">
-            <div class="row">
-                <div id="breadcrumb"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <figure class="figure">
-                        <img src="/holder/100x100" class="figure-img img-fluid rounded">
-                        <figcaption class="figure-caption">caption.</figcaption>
-                    </figure>
-                    <figure class="figure">
-                        <img src="/holder/100x100" class="figure-img img-fluid rounded">
-                        <figcaption class="figure-caption">caption.</figcaption>
-                    </figure>
-                    <figure class="figure">
-                        <img src="/holder/100x100" class="figure-img img-fluid rounded">
-                        <figcaption class="figure-caption">caption.</figcaption>
-                    </figure>
-                    <figure class="figure">
-                        <img src="/holder/100x100" class="figure-img img-fluid rounded">
-                        <figcaption class="figure-caption">caption.</figcaption>
-                    </figure>
-                </div>
-            </div>
-
+            <div class="row" id="breadcrumb"></div>
+            <div class="row" id="fileView"></div>
         </div>
     </div>
 
@@ -151,41 +129,9 @@
         </ul>
     </footer>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div id="example"></div>
-        </div>
-    </div>
-
 </div>
 
-<script type="text/babel">
 
-    class Example extends React.Component {
-        constructor(props) {
-            super(props);
-            this.state = {date: new Date()};
-        }
-
-        render() {
-            const element = <div>
-                <h3>测试React {this.state.date.toLocaleTimeString()} </h3>
-                <a href="https://www.runoob.com/react/react-tutorial.html" target="_blank">学习链接 {1000 + 24}</a>
-                {/*顶顶顶顶*/}
-            </div>
-
-            return (
-                element
-            );
-        }
-    }
-
-    ReactDOM.render(
-        <Example/>,
-        document.getElementById('example')
-    );
-
-</script>
 <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.development.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.development.js"></script>
