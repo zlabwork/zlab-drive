@@ -71,6 +71,9 @@ class FileView extends React.Component {
 
     componentDidMount() {
         utilsBox.httpRequest("get", "/files/xxx?id=0").then((resp) => {
+            if (resp.status != 200 || resp.data.code != 200) {
+                return
+            }
             this.setState(prevState => ({
                 files: resp.data.data
             }));
@@ -83,6 +86,9 @@ class FileView extends React.Component {
 
     handleDoubleClick(uuid, event) {
         utilsBox.httpRequest("get", "/files/" + uuid).then((resp) => {
+            if (resp.status != 200 || resp.data.code != 200) {
+                return
+            }
             this.setState(prevState => ({
                 files: resp.data.data
             }));

@@ -26,8 +26,9 @@ type Attr struct {
 }
 
 type FileService interface {
+	FileAlias(id string) (*File, error)
 	File(id int64) (*File, error)
-	Files() ([]*File, error)
+	Files(parent int64) ([]*File, error)
 	CreateFile(u *File) error
 	DeleteFile(id int64) error
 }
