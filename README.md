@@ -1,6 +1,6 @@
-## Request 参数获取
+## request
 
-```golang
+```go
 // 获取 uri
 vars := mux.Vars(r)
 vars["name"]
@@ -20,4 +20,14 @@ name := r.FormValue("name")
 var reader io.Reader = r.Body
 b, _ := ioutil.ReadAll(reader)
 v, _ := url.ParseQuery(string(b))
+```
+
+## cookie
+```go
+// 读取 cookie
+r.Cookies()
+
+// 写入 cookie
+cookie := &http.Cookie{Name: "userId", Value: "123456"}
+http.SetCookie(w, cookie)
 ```
