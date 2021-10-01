@@ -70,7 +70,7 @@ class FileView extends React.Component {
     }
 
     componentDidMount() {
-        utilsBox.httpRequest("get", "/files/xxx?id=0").then((resp) => {
+        utilsBox.httpRequest("get", "/files/0?id=0").then((resp) => {
             if (resp.status != 200 || resp.data.code != 200) {
                 return
             }
@@ -104,12 +104,12 @@ class FileView extends React.Component {
                 <div className="card h-100">
                     <img src="/holder/200x200" className="card-img-top" alt="..."/>
                     <div className="card-body">
-                        <p className="card-text">{item.name}</p>
+                        <p className="card-text text-truncate">{item.name}</p>
                     </div>
                 </div>
             </div>
         );
-        return <div className="row row-cols-1 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4">{element}</div>
+        return <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 row-cols-xxl-7 g-4">{element}</div>
     }
 }
 
