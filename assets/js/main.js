@@ -102,7 +102,7 @@ class FileView extends React.Component {
                  onClick={this.handleClick.bind(this, item.id)}
                  onDoubleClick={this.handleDoubleClick.bind(this, item.uuid)}>
                 <div className="card h-100">
-                    <img src="/holder/200x200" className="card-img-top" alt="..."/>
+                    <img src={"/preview/" + item.uuid} className="card-img-top" alt="..."/>
                     <div className="card-body">
                         <p className="card-text text-truncate">{item.name}</p>
                     </div>
