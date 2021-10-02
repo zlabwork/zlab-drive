@@ -12,4 +12,7 @@ type Yaml struct {
 			Name string
 		}
 	}
+	Image struct {
+		ThumbWidth int `yaml:"thumbWidth"`
+	}
 }

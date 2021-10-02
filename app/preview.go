@@ -1,8 +1,10 @@
 package app
 
 import (
+	"drive"
 	"drive/app/utils"
 	"drive/srv/db/mysql"
+	"fmt"
 	"github.com/disintegration/gift"
 	"github.com/gorilla/mux"
 	"image"
@@ -24,7 +26,8 @@ const noPicture = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16
 func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	userId := "123456" // TODO :: modify userId
 	id := mux.Vars(r)["id"]
-	suf := "_100x100"
+	width := drive.Cfg.Image.ThumbWidth
+	suf := fmt.Sprintf("_%dx%d", width, width)
 	temp := utils.WorkDir("temp/"+userId+"/"+id[0:1]) + id + suf
 
 	// temp is not exist
@@ -77,9 +80,10 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 // @docs https://github.com/disintegration/gift
 func filterImage(src image.Image) *image.RGBA {
 	// 1. Create a new filter list and add some filters.
+	w := drive.Cfg.Image.ThumbWidth
 	g := gift.New(
-		gift.Resize(180, 0, gift.LanczosResampling),
-		gift.CropToSize(180, 180, gift.LeftAnchor),
+		gift.Resize(w, 0, gift.LanczosResampling),
+		gift.CropToSize(w, w, gift.LeftAnchor),
 	)
 
 	// 2. Create a new image of the corresponding size.

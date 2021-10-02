@@ -7,3 +7,6 @@ db:
     user:
     pass:
     name:
+
+image:
+  thumbWidth: 200
