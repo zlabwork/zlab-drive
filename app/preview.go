@@ -3,7 +3,13 @@ package app
 import (
 	"drive/app/utils"
 	"drive/srv/db/mysql"
+	"github.com/disintegration/gift"
 	"github.com/gorilla/mux"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	"image/png"
+	_ "image/png"
 	"log"
 	"net/http"
 	"os"
@@ -28,27 +34,28 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				return
 			}
+			// 1. fetch database
 			file, err := fs.FileAlias(id)
 			if err != nil {
 				w.Header().Set("Content-Type", "image/svg+xml")
 				w.Write([]byte(noPicture))
 				return
 			}
-			path := utils.WorkDir(userId+"/data") + file.Path + file.Name
-			bs, err := os.ReadFile(path)
+			filename := utils.WorkDir(userId+"/data") + file.Path + file.Name
+
+			// 2. resize
+			src, err := loadImage(filename)
 			if err != nil {
 				w.Header().Set("Content-Type", "image/svg+xml")
 				w.Write([]byte(noPicture))
 				return
 			}
-			if os.WriteFile(temp, bs, 0755) != nil {
-				log.Println("error write")
+			dst := filterImage(src)
+			err = saveImage(temp, dst)
+			if err != nil {
+				log.Println("error when save image", err)
 				return
 			}
-			// TODO :: resize
-			w.WriteHeader(http.StatusOK)
-			w.Write(bs)
-			return
 		}
 	}
 	bs, err := os.ReadFile(temp)
@@ -60,9 +67,52 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	tf := time.Now().AddDate(0, 0, 7).Format(http.TimeFormat)
 	// w.Header().Set("Last-Modified", "")
 	w.Header().Set("Cache-Control", "private, max-age=10800, pre-check=10800")
-	w.Header().Set("Content-type", "image/jpeg")
+	w.Header().Set("Content-type", "image/png")
 	w.Header().Set("ETag", id)
 	w.Header().Set("Expires", tf)
 	w.Header().Set("Date", tf)
 	w.Write(bs)
+}
+
+// @docs https://github.com/disintegration/gift
+func filterImage(src image.Image) *image.RGBA {
+	// 1. Create a new filter list and add some filters.
+	g := gift.New(
+		gift.Resize(180, 0, gift.LanczosResampling),
+		gift.CropToSize(180, 180, gift.LeftAnchor),
+	)
+
+	// 2. Create a new image of the corresponding size.
+	// dst is a new target image, src is the original image.
+	dst := image.NewRGBA(g.Bounds(src.Bounds()))
+
+	// 3. Use the Draw func to apply the filters to src and store the result in dst.
+	g.Draw(dst, src)
+	return dst
+}
+
+func saveImage(filename string, img image.Image) error {
+	f, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	err = png.Encode(f, img)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func loadImage(filename string) (image.Image, error) {
+	f, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	img, _, err := image.Decode(f)
+	if err != nil {
+		return nil, err
+	}
+	return img, nil
 }
