@@ -45,6 +45,7 @@ func main() {
 	r.HandleFunc("/folders/{id:[0-9a-zA-Z_-]+}", app.DefaultHandler).Methods("GET")
 	r.HandleFunc("/files/{id:[0-9a-zA-Z_-]+}", api.FilesHandler).Methods("GET")
 	r.HandleFunc("/preview/{id:[0-9a-zA-Z_-]+}", app.PreviewHandler).Methods("GET")
+	r.HandleFunc("/import", app.ImportHandler).Methods("GET")
 	r.HandleFunc("/do/{id:[0-9a-zA-Z_-]+}", app.DefaultHandler).Methods("POST")
 	r.HandleFunc("/holder/{id:[0-9x]+}", app.Placeholder).Methods("GET")
 	r.HandleFunc("/upload", app.DefaultHandler).Methods("PUT")
