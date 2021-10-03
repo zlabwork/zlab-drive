@@ -1,6 +1,7 @@
 package mysql
 
 import (
+	"database/sql"
 	"drive"
 	"fmt"
 )
@@ -56,16 +57,16 @@ func (f *FileService) Files(parent int64) ([]*drive.File, error) {
 	return result, nil
 }
 
-func (f *FileService) CreateFile(file *drive.File) error {
+func (f *FileService) CreateFile(file *drive.File) (sql.Result, error) {
 	stmt, err := f.H.Conn.Prepare("INSERT INTO `zd_files` (`uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `f_mtime`, `ctime`, `mtime`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	_, err = stmt.Exec(file.UserId, file.Uuid, file.Name, file.MimeType, file.Size, file.Hash, file.Parent, file.Path, file.Attr, file.FileCtime, file.FileMtime, file.Ctime, file.Mtime)
+	res, err := stmt.Exec(file.UserId, file.Uuid, file.Name, file.MimeType, file.Size, file.Hash, file.Parent, file.Path, file.Attr, file.FileCtime, file.FileMtime, file.Ctime, file.Mtime)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return res, nil
 }
 
 func (f *FileService) DeleteFile(id int64) error {

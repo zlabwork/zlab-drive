@@ -1,5 +1,7 @@
 package drive
 
+import "database/sql"
+
 type File struct {
 	Id        int64  `json:"id"`
 	UserId    int64  `json:"uid"`
@@ -29,6 +31,6 @@ type FileService interface {
 	FileAlias(id string) (*File, error)
 	File(id int64) (*File, error)
 	Files(parent int64) ([]*File, error)
-	CreateFile(u *File) error
+	CreateFile(u *File) (sql.Result, error)
 	DeleteFile(id int64) error
 }
