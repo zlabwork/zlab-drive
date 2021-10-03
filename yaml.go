@@ -13,6 +13,9 @@ type Yaml struct {
 		}
 	}
 	Image struct {
-		ThumbWidth int `yaml:"thumbWidth"`
+		Thumb struct {
+			Width  int `yaml:"width"`
+			Height int `yaml:"height"`
+		}
 	}
 }
