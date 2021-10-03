@@ -20,6 +20,7 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+	defer fs.H.Close()
 
 	// fetch folder
 	var parent int64

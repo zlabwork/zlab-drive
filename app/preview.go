@@ -37,6 +37,7 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				return
 			}
+			defer fs.H.Close()
 			// 1. fetch database
 			file, err := fs.FileAlias(id)
 			if err != nil {

@@ -36,6 +36,10 @@ func ConnectMySQL(dsn string) (*handle, error) {
 	}, nil
 }
 
+func (db handle) Close() {
+	db.Conn.Close()
+}
+
 func (db *handle) CreateDatabase(database string) error {
 	q := fmt.Sprintf("CREATE DATABASE %s DEFAULT CHARSET = %s COLLATE = %s;", database, DefaultCharset, DefaultCollation)
 	_, err := db.Conn.Exec(q)

@@ -6,11 +6,11 @@ import (
 )
 
 type FileService struct {
-	h *handle
+	H *handle
 }
 
 func (f *FileService) FileAlias(id string) (*drive.File, error) {
-	row := f.h.Conn.QueryRow("SELECT `id`, `uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `ctime`, `mtime` FROM `zd_files` WHERE `uuid` = ? LIMIT 1", id)
+	row := f.H.Conn.QueryRow("SELECT `id`, `uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `ctime`, `mtime` FROM `zd_files` WHERE `uuid` = ? LIMIT 1", id)
 	file := drive.File{}
 	row.Scan(&file.Id, &file.UserId, &file.Uuid, &file.Name, &file.MimeType, &file.Size, &file.Hash, &file.Parent, &file.Path, &file.Attr, &file.FileCtime, &file.Ctime, &file.Mtime)
 	if file.Id == 0 {
@@ -20,7 +20,7 @@ func (f *FileService) FileAlias(id string) (*drive.File, error) {
 }
 
 func (f *FileService) File(id int64) (*drive.File, error) {
-	row := f.h.Conn.QueryRow("SELECT `id`, `uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `ctime`, `mtime` FROM `zd_files` WHERE `id` = ? LIMIT 1", id)
+	row := f.H.Conn.QueryRow("SELECT `id`, `uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `ctime`, `mtime` FROM `zd_files` WHERE `id` = ? LIMIT 1", id)
 	file := drive.File{}
 	row.Scan(&file.Id, &file.UserId, &file.Uuid, &file.Name, &file.MimeType, &file.Size, &file.Hash, &file.Parent, &file.Path, &file.Attr, &file.FileCtime, &file.Ctime, &file.Mtime)
 	if file.Id == 0 {
@@ -31,7 +31,7 @@ func (f *FileService) File(id int64) (*drive.File, error) {
 
 func (f *FileService) Files(parent int64) ([]*drive.File, error) {
 
-	rows, err := f.h.Conn.Query("SELECT `id`, `uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `ctime`, `mtime` FROM `zd_files` WHERE `parent` = ? ", parent)
+	rows, err := f.H.Conn.Query("SELECT `id`, `uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `ctime`, `mtime` FROM `zd_files` WHERE `parent` = ? ", parent)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (f *FileService) Files(parent int64) ([]*drive.File, error) {
 }
 
 func (f *FileService) CreateFile(file *drive.File) error {
-	stmt, err := f.h.Conn.Prepare("INSERT INTO `zd_files` (`uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `f_mtime`, `ctime`, `mtime`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)")
+	stmt, err := f.H.Conn.Prepare("INSERT INTO `zd_files` (`uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `f_mtime`, `ctime`, `mtime`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)")
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func (f *FileService) CreateFile(file *drive.File) error {
 }
 
 func (f *FileService) DeleteFile(id int64) error {
-	stmt, err := f.h.Conn.Prepare("DELETE FROM `zd_files` WHERE id = ?")
+	stmt, err := f.H.Conn.Prepare("DELETE FROM `zd_files` WHERE id = ?")
 	if err != nil {
 		return err
 	}
@@ -81,7 +81,7 @@ func (f *FileService) DeleteFile(id int64) error {
 
 func (f *FileService) ListFiles(parent int64, offset, size int) ([]*drive.File, error) {
 
-	rows, err := f.h.Conn.Query("SELECT `id`, `uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `ctime`, `mtime` FROM `zd_files` WHERE `parent` = ? LIMIT ?,?", parent, offset, size)
+	rows, err := f.H.Conn.Query("SELECT `id`, `uid`, `uuid`, `name`, `mime`, `size`, `hash`, `parent`, `path`, `attr`, `f_ctime`, `ctime`, `mtime` FROM `zd_files` WHERE `parent` = ? LIMIT ?,?", parent, offset, size)
 	if err != nil {
 		return nil, err
 	}

@@ -16,5 +16,5 @@ func NewFileService() (*FileService, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &FileService{h: h}, nil
+	return &FileService{H: h}, nil
 }
