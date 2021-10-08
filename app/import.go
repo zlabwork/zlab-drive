@@ -96,7 +96,9 @@ func listFile(parentId int64, filename string) error {
 				Ctime:     ts,
 				Mtime:     ts,
 			}
-			fs.CreateFile(file)
+			if _, err := fs.CreateFile(file); err != nil {
+				log.Println(err)
+			}
 		}
 	}
 	return nil

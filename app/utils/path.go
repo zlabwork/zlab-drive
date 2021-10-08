@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -8,12 +9,16 @@ import (
 )
 
 const (
-	defaultDirName = ".ZLabDrive/"
+	defaultDirName = "zLabDrive/"
 )
 
 func HomeDir() string {
 	if os.Getenv("DIR_HOME") == "" {
-		return os.Getenv("HOME") + "/" + defaultDirName
+		home, err := os.UserHomeDir()
+		if err != nil {
+			log.Panicln(err)
+		}
+		return home + "/" + defaultDirName
 	}
 	return strings.TrimRight(os.Getenv("DIR_HOME"), "/") + "/"
 }

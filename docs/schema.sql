@@ -29,16 +29,17 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `zd_files` (
   `id` bigint(20) NOT NULL,
-  `uid` bigint(20) NOT NULL DEFAULT '0' COMMENT 'userId',
+  `uid` bigint(20) NOT NULL DEFAULT '0' COMMENT 'UserId',
   `uuid` varchar(36) NOT NULL DEFAULT '' COMMENT 'UUID',
-  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '文件名',
   `mime` varchar(32) NOT NULL DEFAULT '' COMMENT 'MimeType',
   `size` int(11) NOT NULL DEFAULT '0' COMMENT '文件大小',
   `hash` varchar(40) NOT NULL DEFAULT '' COMMENT '文件哈希',
   `parent` bigint(20) NOT NULL DEFAULT '0' COMMENT '父目录',
   `path` varchar(1000) NOT NULL DEFAULT '' COMMENT '路径',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '文件名',
   `attr` varchar(120) DEFAULT '' COMMENT '文件属性',
   `f_ctime` int(11) NOT NULL DEFAULT '0' COMMENT '文件创建时间',
+  `f_mtime` int(11) NOT NULL DEFAULT '0' COMMENT '文件修改时间',
   `ctime` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `mtime` int(11) NOT NULL DEFAULT '0' COMMENT '修改时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
