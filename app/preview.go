@@ -85,8 +85,7 @@ func filterImage(src image.Image) *image.RGBA {
 	w := drive.Cfg.Image.Thumb.Width
 	h := drive.Cfg.Image.Thumb.Height
 	g := gift.New(
-		gift.Resize(w, 0, gift.LanczosResampling),
-		gift.CropToSize(w, h, gift.LeftAnchor),
+		gift.ResizeToFill(w, h, gift.LanczosResampling, gift.CenterAnchor),
 	)
 
 	// 2. Create a new image of the corresponding size.
