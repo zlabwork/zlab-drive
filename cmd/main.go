@@ -25,7 +25,7 @@ func main() {
 		log.Fatal(err)
 	}
 	// app.yaml
-	bs, err := ioutil.ReadFile("../configs/app.yaml")
+	bs, err := ioutil.ReadFile("../config/app.yaml")
 	err = yaml.Unmarshal(bs, &drive.Cfg)
 	if err != nil {
 		log.Fatalf("error: %v", err)

@@ -41,4 +41,4 @@ Thumbs.db
 
 ### Project ###
 node_modules/
-configs/
+config/
