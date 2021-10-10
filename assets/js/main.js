@@ -23,7 +23,7 @@ let utilsBox = function () {
 class Breadcrumb extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {date: new Date()};
+        this.state = {local: [{"name": "Home", "id": "abc"}, {"name": "文档", "id": "def"}]};
 
         // 这边绑定是必要的，这样 `this` 才能在回调函数中使用
         this.handleClick = this.handleClick.bind(this);
@@ -33,28 +33,28 @@ class Breadcrumb extends React.Component {
         // console.log("execute right now")
     }
 
-    handleClick(name, event) {
-        console.log(name)
-        this.setState(prevState => ({
-            date: new Date()
-        }));
-        console.log(this.state)
-        utilsBox.httpRequest("get", "/files/xxx?id=123654", {"aaa": "bbb"})
+    handleClick(uuid, event) {
+        utilsBox.httpRequest("get", "/files/" + uuid).then((resp) => {
+            if (resp.status != 200 || resp.data.code != 200) {
+                return
+            }
+            this.setState(prevState => ({
+                files: resp.data.data
+            }));
+        })
     }
 
     render() {
+        const element = this.state.local.map((item) =>
+            <li className="breadcrumb-item" key={item.id}><a className="breadcrumb-link link-dark" href="#" onClick={this.handleClick.bind(this, item.id)}>{item.name}</a></li>
+        );
         return (
-            <ul className="nav">
-                <li className="nav-item">
-                    <a className="nav-link active" href="#" onClick={this.handleClick.bind(this, "Name-A")}>目录A</a>
-                </li>
-                <li className="nav-item">
-                    <a className="nav-link" href="#" onClick={this.handleClick.bind(this, "Name-B")}>目录B</a>
-                </li>
-                <li className="nav-item">
-                    <a className="nav-link disabled">目录C {this.state.date.toLocaleTimeString()}</a>
-                </li>
-            </ul>
+            <nav aria-label="breadcrumb">
+                <ul className="breadcrumb breadcrumb-no-gutter">
+                    {element}
+                    <li className="breadcrumb-item active" aria-current="page">Billing</li>
+                </ul>
+            </nav>
         );
     }
 }
@@ -63,14 +63,14 @@ class Breadcrumb extends React.Component {
 class FileView extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {date: new Date(), files: []};
+        this.state = {files: []};
 
         // 这边绑定是必要的，这样 `this` 才能在回调函数中使用
         this.handleClick = this.handleClick.bind(this);
     }
 
     componentDidMount() {
-        utilsBox.httpRequest("get", "/files/0?id=0").then((resp) => {
+        utilsBox.httpRequest("get", "/files/0").then((resp) => {
             if (resp.status != 200 || resp.data.code != 200) {
                 return
             }
