@@ -15,6 +15,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -26,8 +27,21 @@ const noPicture = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16
 func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	userId := "123456" // TODO :: modify userId
 	id := mux.Vars(r)["id"]
-	width := drive.Cfg.Image.Thumb.Width
-	height := drive.Cfg.Image.Thumb.Height
+	vars := r.URL.Query()
+	name := strings.ToLower(vars.Get("name"))
+
+	var width, height int
+	var size string
+	if name == "large" {
+		width = drive.Cfg.Image.Large.Width
+		height = drive.Cfg.Image.Large.Height
+		size = "large"
+	} else {
+		width = drive.Cfg.Image.Thumb.Width
+		height = drive.Cfg.Image.Thumb.Height
+		size = "small"
+	}
+
 	suf := fmt.Sprintf("_%dx%d", width, height)
 	temp := utils.WorkDir("temp/"+userId+"/"+id[0:1]) + id + suf
 
@@ -55,7 +69,7 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(noPicture))
 				return
 			}
-			dst := filterImage(src)
+			dst := filterImage(src, size)
 			err = saveImage(temp, dst)
 			if err != nil {
 				log.Println("error when save image", err)
@@ -80,13 +94,23 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // @docs https://github.com/disintegration/gift
-func filterImage(src image.Image) *image.RGBA {
+func filterImage(src image.Image, s string) *image.RGBA {
 	// 1. Create a new filter list and add some filters.
-	w := drive.Cfg.Image.Thumb.Width
-	h := drive.Cfg.Image.Thumb.Height
-	g := gift.New(
-		gift.ResizeToFill(w, h, gift.LanczosResampling, gift.CenterAnchor),
-	)
+	var w, h int
+	var g *gift.GIFT
+	if s == "small" {
+		w = drive.Cfg.Image.Thumb.Width
+		h = drive.Cfg.Image.Thumb.Height
+		g = gift.New(
+			gift.ResizeToFill(w, h, gift.LanczosResampling, gift.CenterAnchor),
+		)
+	} else if s == "large" {
+		w = drive.Cfg.Image.Large.Width
+		h = drive.Cfg.Image.Large.Height
+		g = gift.New(
+			gift.ResizeToFit(w, h, gift.LanczosResampling),
+		)
+	}
 
 	// 2. Create a new image of the corresponding size.
 	// dst is a new target image, src is the original image.
