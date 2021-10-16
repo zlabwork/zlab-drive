@@ -84,8 +84,11 @@ class FileView extends React.Component {
         console.log("click" + id)
     }
 
-    handleDoubleClick(uuid, event) {
-        utilsBox.httpRequest("get", "/files/" + uuid).then((resp) => {
+    handleDoubleClick(item, event) {
+        if (item.mime != "folder") {
+            return
+        }
+        utilsBox.httpRequest("get", "/files/" + item.uuid).then((resp) => {
             if (resp.status != 200 || resp.data.code != 200) {
                 return
             }
@@ -100,7 +103,7 @@ class FileView extends React.Component {
             <div className="col"
                  key={item.id}
                  onClick={this.handleClick.bind(this, item.id)}
-                 onDoubleClick={this.handleDoubleClick.bind(this, item.uuid)}>
+                 onDoubleClick={this.handleDoubleClick.bind(this, item)}>
                 <div className="card h-100">
                     <img src={"/preview/" + item.uuid} className="card-img-top" alt="..."/>
                     <div className="card-body">
