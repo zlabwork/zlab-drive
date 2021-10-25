@@ -42,6 +42,7 @@ func main() {
 	r.Use(middleware.LoggingMiddleware)
 	r.HandleFunc("/", app.DefaultHandler)
 	r.HandleFunc("/home", app.HomeHandler)
+	r.HandleFunc("/path/{id:[0-9a-zA-Z_-]+}", api.PathHandler).Methods("GET")
 	r.HandleFunc("/folders/{id:[0-9a-zA-Z_-]+}", app.DefaultHandler).Methods("GET")
 	r.HandleFunc("/files/{id:[0-9a-zA-Z_-]+}", api.FilesHandler).Methods("GET")
 	r.HandleFunc("/preview/{id:[0-9a-zA-Z_-]+}", app.PreviewHandler).Methods("GET")
