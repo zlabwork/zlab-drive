@@ -94,17 +94,25 @@ class Breadcrumb extends React.Component {
     }
 
     handleClick(uuid, event) {
+        // path
+        utilsBox.httpRequest("get", "/path/" + uuid).then((resp) => {
+            if (resp.status != 200 || resp.data.code != 200) {
+                return
+            }
+            this.props.onSetState({local: resp.data.data});
+        })
+        // files
         utilsBox.httpRequest("get", "/files/" + uuid).then((resp) => {
             if (resp.status != 200 || resp.data.code != 200) {
                 return
             }
-            this.props.onSetState({local: []});
+            this.props.onSetState({files: resp.data.data});
         })
     }
 
     render() {
         const element = this.props.local.map((item) =>
-            <li className="breadcrumb-item" key={item.id}><a className="breadcrumb-link link-dark" href="#" onClick={this.handleClick.bind(this, item.id)}>{item.name}</a></li>
+            <li className="breadcrumb-item" key={item.id}><a className="breadcrumb-link link-dark" href="#" onClick={this.handleClick.bind(this, item.uuid)}>{item.name}</a></li>
         );
         return (
             <nav aria-label="breadcrumb">
@@ -121,7 +129,8 @@ class Breadcrumb extends React.Component {
 class FileView extends React.Component {
     constructor(props) {
         super(props);
-        this.handleChange = this.handleChange.bind(this);
+        this.handleChangeFiles = this.handleChangeFiles.bind(this);
+        this.handleChangePath = this.handleChangePath.bind(this);
     }
 
     componentDidMount() {
@@ -129,12 +138,16 @@ class FileView extends React.Component {
             if (resp.status != 200 || resp.data.code != 200) {
                 return
             }
-            this.handleChange(resp.data.data)
+            this.handleChangeFiles(resp.data.data)
         })
     }
 
-    handleChange(files) {
+    handleChangeFiles(files) {
         this.props.onSetState({files: files});
+    }
+
+    handleChangePath(folderArray) {
+        this.props.onSetState({local: folderArray});
     }
 
     handleClick(id, event) {
@@ -145,11 +158,19 @@ class FileView extends React.Component {
         if (item.mime != "folder") {
             return
         }
+        // files
         utilsBox.httpRequest("get", "/files/" + item.uuid).then((resp) => {
             if (resp.status != 200 || resp.data.code != 200) {
                 return
             }
-            this.handleChange(resp.data.data)
+            this.handleChangeFiles(resp.data.data)
+        })
+        // path
+        utilsBox.httpRequest("get", "/path/" + item.uuid).then((resp) => {
+            if (resp.status != 200 || resp.data.code != 200) {
+                return
+            }
+            this.handleChangePath(resp.data.data)
         })
     }
 
