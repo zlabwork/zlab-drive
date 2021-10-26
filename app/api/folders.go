@@ -22,12 +22,19 @@ func PathHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer fs.H.Close()
 
+	home := &drive.Folder{
+		Id:   0,
+		Name: "Home",
+		Uuid: "0",
+	}
+
 	// check parameter
 	vars := mux.Vars(r)
 	if len(vars["id"]) < 32 {
-		drive.ResponseJson(w, drive.JsonError{
-			Code:    msg.ErrParameter,
-			Message: msg.Text(msg.ErrParameter),
+		drive.ResponseJson(w, drive.JsonOK{
+			Code:    msg.OK,
+			Message: msg.Text(msg.OK),
+			Data:    []*drive.Folder{home},
 		})
 		return
 	}
@@ -41,6 +48,7 @@ func PathHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+	folders = append([]*drive.Folder{home}, folders...)
 
 	drive.ResponseJson(w, drive.JsonOK{
 		Code:    msg.OK,
