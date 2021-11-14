@@ -15,6 +15,9 @@
 go.sum
 .env
 .env.local
+.env.dev
+.env.test
+
 
 ### Go Patch ###
 /vendor/
@@ -42,3 +45,4 @@ Thumbs.db
 ### Project ###
 node_modules/
 config/
+assets/img/
