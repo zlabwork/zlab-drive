@@ -66,6 +66,7 @@ func main() {
 			log.Println(err)
 		}
 	}()
+	log.Println("service is start")
 
 	c := make(chan os.Signal, 1)
 	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
