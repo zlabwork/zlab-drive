@@ -1,3 +1,15 @@
+## reference
+https://hub.fastgit.org/cloudreve/Cloudreve
+
+
+## todo
+* 支持存储端 本地、 阿里云 OSS、腾讯云 COS、亚马逊 S3、 OneDrive
+* 支持客户端直传
+* 多用户、用户分组
+* 文件分享、过期时间
+* 在线预览
+
+
 ## request
 
 ```go
