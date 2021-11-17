@@ -54,7 +54,7 @@ func main() {
 
 	srv := &http.Server{
 		Handler:      r,
-		Addr:         "0.0.0.0:8000",
+		Addr:         "0.0.0.0:" + os.Getenv("APP_PORT"),
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
