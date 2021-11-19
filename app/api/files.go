@@ -3,48 +3,28 @@ package api
 import (
 	"drive"
 	"drive/app/msg"
-	"drive/srv/db/mysql"
+	"drive/srv/adaptor"
+	"encoding/base64"
 	"github.com/gorilla/mux"
 	"net/http"
 )
 
 func FilesHandler(w http.ResponseWriter, r *http.Request) {
 
+	// decode
 	vars := mux.Vars(r)
-	fs, err := mysql.NewFileService()
+	s, err := base64.RawURLEncoding.DecodeString(vars["id"])
 	if err != nil {
 		drive.ResponseJson(w, drive.JsonError{
-			Code:    msg.ErrDB,
-			Message: msg.Text(msg.ErrDB),
-			Refer:   "https://zlab.dev",
+			Code:    msg.ErrEncode,
+			Message: msg.Text(msg.ErrEncode),
 		})
 		return
 	}
-	defer fs.H.Close()
+	key := string(s)
 
-	// fetch folder
-	var parent int64
-	if len(vars["id"]) >= 32 {
-		folder, err := fs.FileAlias(vars["id"])
-		if err != nil {
-			drive.ResponseJson(w, drive.JsonError{
-				Code:    msg.ErrNoData,
-				Message: msg.Text(msg.ErrNoData),
-			})
-			return
-		}
-		if folder.MimeType != "folder" {
-			drive.ResponseJson(w, drive.JsonError{
-				Code:    msg.Err,
-				Message: msg.Text(msg.Err),
-			})
-			return
-		}
-		parent = folder.Id
-	}
-
-	// fetch files list
-	data, err := fs.Files(parent)
+	// fs & fetch
+	fs, err := adaptor.NewAdaptor()
 	if err != nil {
 		drive.ResponseJson(w, drive.JsonError{
 			Code:    msg.Err,
@@ -52,11 +32,20 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+	data, err := fs.List(key, 0, 20) // TODO: offset & limit
+	if err != nil {
+		drive.ResponseJson(w, drive.JsonError{
+			Code:    msg.ErrNoData,
+			Message: msg.Text(msg.ErrNoData),
+		})
+		return
+	}
 
-	output := drive.JsonOK{
+	// output
+	drive.ResponseJson(w, drive.JsonOK{
 		Code:    msg.OK,
 		Message: msg.Text(msg.OK),
 		Data:    data,
-	}
-	drive.ResponseJson(w, output)
+	})
+
 }

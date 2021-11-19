@@ -7,8 +7,7 @@ import (
 	"strconv"
 )
 
-// NewAdaptor TODO :: modify return interface
-func NewAdaptor() (interface{}, error) {
+func NewAdaptor() (drive.FileService, error) {
 
 	appDrive, err := strconv.Atoi(os.Getenv("APP_DRIVE"))
 	if err != nil {

@@ -1,17 +1,12 @@
 package drive
 
-import "database/sql"
-
 type File struct {
-	Id        int64  `json:"id"`
-	UserId    int64  `json:"uid"`
 	Uuid      string `json:"uuid"`
-	Name      string `json:"name"`
 	MimeType  string `json:"mime"`
-	Size      int    `json:"size"`
+	Size      int64  `json:"size"`
 	Hash      string `json:"hash"`
-	Parent    int64  `json:"parent"`
-	Path      string `json:"path"`
+	Name      string `json:"name"`
+	Key       string `json:"key"`
 	Attr      string `json:"attr"`
 	FileCtime int64  `json:"file_ctime"`
 	FileMtime int64  `json:"file_mtime"`
@@ -28,9 +23,9 @@ type Attr struct {
 }
 
 type FileService interface {
-	FileAlias(id string) (*File, error)
-	File(id int64) (*File, error)
-	Files(parent int64) ([]*File, error)
-	CreateFile(u *File) (sql.Result, error)
-	DeleteFile(id int64) error
+	Get(key string) (*File, error)
+	List(key string, offset int, limit int) ([]*File, error)
+	Create(file *File) error
+	Delete(key string) error
+	Modify(key string, newFile *File) error
 }

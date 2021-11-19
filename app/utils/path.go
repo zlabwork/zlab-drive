@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	defaultDirName = "zLabDrive/"
+	defaultDirName = "zLabDrive"
 )
 
 func HomeDir() string {
@@ -18,13 +18,13 @@ func HomeDir() string {
 		if err != nil {
 			log.Panicln(err)
 		}
-		return home + "/" + defaultDirName
+		return home + string(os.PathSeparator) + defaultDirName
 	}
-	return strings.TrimRight(os.Getenv("DIR_HOME"), "/") + "/"
+	return strings.TrimRight(os.Getenv("DIR_HOME"), string(os.PathSeparator))
 }
 
 func WorkDir(name string) string {
-	dir := HomeDir() + strings.Trim(name, "/") + "/"
+	dir := HomeDir() + string(os.PathSeparator) + strings.Trim(name, string(os.PathSeparator))
 	if _, err := os.Stat(dir); err != nil {
 		os.MkdirAll(dir, 0700)
 	}
@@ -32,8 +32,7 @@ func WorkDir(name string) string {
 }
 
 func TempDir() string {
-	dir := WorkDir("temp")
-	return dir
+	return WorkDir("temp")
 }
 
 func NewLogName(name string, version string) string {

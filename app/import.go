@@ -21,6 +21,7 @@ func ImportHandler(w http.ResponseWriter, r *http.Request) {
 	listFile(0, filename)
 }
 
+// TODO: check code
 func listFile(parentId int64, filename string) error {
 	l := len(utils.WorkDir("123456/data"))
 	path := filename[l:]
@@ -48,14 +49,14 @@ func listFile(parentId int64, filename string) error {
 		ts := time.Now().Unix()
 		if item.IsDir() {
 			file := &drive.File{
-				UserId:    123456, // todo
+				// UserId:    123456,
+				// Parent:    parentId,
 				Uuid:      uuid.New().String(),
 				Name:      item.Name(),
 				MimeType:  "folder",
 				Size:      0,
 				Hash:      "",
-				Parent:    parentId,
-				Path:      path + "/",
+				Key:       path + "/", // FIXME: path to key
 				Attr:      "",
 				FileCtime: ts,
 				FileMtime: ts,
@@ -82,14 +83,14 @@ func listFile(parentId int64, filename string) error {
 			}
 
 			file := &drive.File{
-				UserId:    123456, // todo
+				// UserId:    123456,
+				// Parent:    parentId,
 				Uuid:      uuid.New().String(),
 				Name:      item.Name(),
 				MimeType:  "",
-				Size:      int(info.Size()),
+				Size:      info.Size(),
 				Hash:      hex.EncodeToString(h.Sum(nil)),
-				Parent:    parentId,
-				Path:      path + "/",
+				Key:       path + "/", // FIXME: path to key
 				Attr:      "",
 				FileCtime: info.ModTime().Unix(),
 				FileMtime: info.ModTime().Unix(),

@@ -60,7 +60,7 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(noPicture))
 				return
 			}
-			filename := utils.WorkDir(userId+"/data") + file.Path + file.Name
+			filename := utils.WorkDir(userId+"/data") + file.Key + file.Name // FIXME: path to key
 
 			// 2. resize
 			src, err := loadImage(filename)
