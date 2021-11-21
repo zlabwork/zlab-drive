@@ -13,15 +13,18 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 
 	// decode
 	vars := mux.Vars(r)
-	s, err := base64.RawURLEncoding.DecodeString(vars["id"])
-	if err != nil {
-		drive.ResponseJson(w, drive.JsonError{
-			Code:    msg.ErrEncode,
-			Message: msg.Text(msg.ErrEncode),
-		})
-		return
+	key := ""
+	if len(vars["id"]) >= 2 {
+		s, err := base64.RawURLEncoding.DecodeString(vars["id"])
+		if err != nil {
+			drive.ResponseJson(w, drive.JsonError{
+				Code:    msg.ErrEncode,
+				Message: msg.Text(msg.ErrEncode),
+			})
+			return
+		}
+		key = string(s)
 	}
-	key := string(s)
 
 	// fs & fetch
 	fs, err := adaptor.NewAdaptor()

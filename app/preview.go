@@ -1,9 +1,12 @@
 package app
 
 import (
+	"crypto/md5"
 	"drive"
+	"drive/app/msg"
 	"drive/app/utils"
-	"drive/srv/db/mysql"
+	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"github.com/disintegration/gift"
 	"github.com/gorilla/mux"
@@ -24,9 +27,26 @@ const noPicture = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16
   <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
 </svg>`
 
+// PreviewHandler TODO :: modify userId
 func PreviewHandler(w http.ResponseWriter, r *http.Request) {
-	userId := "123456" // TODO :: modify userId
+
+	// 1. key & hash
 	id := mux.Vars(r)["id"]
+	s, err := base64.RawURLEncoding.DecodeString(id)
+	if err != nil {
+		drive.ResponseJson(w, drive.JsonError{
+			Code:    msg.ErrEncode,
+			Message: msg.Text(msg.ErrEncode),
+		})
+		return
+	}
+	key := string(s)
+	h := md5.New()
+	h.Write(s)
+	ha := h.Sum(nil)
+	haStr := hex.EncodeToString(ha)
+
+	// 2. width & height
 	vars := r.URL.Query()
 	name := strings.ToLower(vars.Get("name"))
 
@@ -42,27 +62,28 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 		size = "small"
 	}
 
+	// 3. cache name
 	suf := fmt.Sprintf("_%dx%d", width, height)
-	temp := utils.WorkDir("temp/"+userId+"/"+id[0:1]) + id + suf
+	temp := utils.WorkDir("temp/"+haStr[0:2]) + string(os.PathSeparator) + haStr + suf
 
-	// temp is not exist
+	// 4. temp is not exist
 	if _, err := os.Stat(temp); err != nil {
 		if os.IsNotExist(err) {
-			fs, err := mysql.NewFileService()
-			if err != nil {
-				return
-			}
-			defer fs.H.Close()
-			// 1. fetch database
-			file, err := fs.FileAlias(id)
-			if err != nil {
-				w.Header().Set("Content-Type", "image/svg+xml")
-				w.Write([]byte(noPicture))
-				return
-			}
-			filename := utils.WorkDir(userId+"/data") + file.Key + file.Name // FIXME: path to key
+			// TODO: fetch from adaptor
+			//fs, err := adaptor.NewAdaptor()
+			//if err != nil {
+			//	return
+			//}
+			//// 1>. fetch
+			//file, err := fs.Get(key)
+			//if err != nil {
+			//	w.Header().Set("Content-Type", "image/svg+xml")
+			//	w.Write([]byte(noPicture))
+			//	return
+			//}
+			filename := utils.WorkDir("data") + key
 
-			// 2. resize
+			// 2>. resize
 			src, err := loadImage(filename)
 			if err != nil {
 				w.Header().Set("Content-Type", "image/svg+xml")

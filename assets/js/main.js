@@ -159,31 +159,31 @@ class FileView extends React.Component {
             return
         }
         // files
-        utilsBox.httpRequest("get", "/files/" + item.uuid).then((resp) => {
+        utilsBox.httpRequest("get", "/files/" + item.key).then((resp) => {
             if (resp.status != 200 || resp.data.code != 200) {
                 return
             }
             this.handleChangeFiles(resp.data.data)
         })
         // path
-        utilsBox.httpRequest("get", "/path/" + item.uuid).then((resp) => {
-            if (resp.status != 200 || resp.data.code != 200) {
-                return
-            }
-            this.handleChangePath(resp.data.data)
-        })
+        // utilsBox.httpRequest("get", "/path/" + item.key).then((resp) => {
+        //     if (resp.status != 200 || resp.data.code != 200) {
+        //         return
+        //     }
+        //     this.handleChangePath(resp.data.data)
+        // })
     }
 
     render() {
-        const element = this.props.files.map((item) =>
+        const element = this.props.files.map((item, index) =>
             <div className="col"
-                 key={item.id}
-                 onClick={this.handleClick.bind(this, item.id)}
+                 key={index}
+                 onClick={this.handleClick.bind(this, item.key)}
                  onDoubleClick={this.handleDoubleClick.bind(this, item)}>
                 <div className="card h-100">
                     {item.mime == "folder" ?
                         <img src={"/holder/200x150?text=" + item.name} className="card-img-top" alt="..."/>
-                        : <img src={"/preview/" + item.uuid} className="card-img-top" alt="..."/>
+                        : <img src={"/preview/" + item.key} className="card-img-top" alt="..."/>
                     }
                     <div className="card-body">
                         <p className="card-text text-truncate">{item.name}</p>
