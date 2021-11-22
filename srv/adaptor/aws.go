@@ -31,3 +31,7 @@ func (s3 *S3Drive) Delete(key string) error {
 func (s3 *S3Drive) Modify(key string, newFile *drive.File) error {
 	return nil
 }
+
+func (s3 *S3Drive) Bytes(key string) ([]byte, error) {
+	return nil, nil
+}

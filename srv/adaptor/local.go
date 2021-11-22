@@ -5,6 +5,7 @@ import (
 	"drive/app/utils"
 	"encoding/base64"
 	"io/ioutil"
+	"os"
 )
 
 type LocalDrive struct {
@@ -18,7 +19,21 @@ func NewLocalDrive() *LocalDrive {
 }
 
 func (loc *LocalDrive) Get(key string) (*drive.File, error) {
-	return nil, nil
+
+	dirName := utils.WorkDir("data")
+	f, err := os.Stat(dirName + key)
+	if err != nil {
+		return nil, err
+	}
+
+	return &drive.File{
+		MimeType:  "",
+		Hash:      "",
+		Key:       base64.RawURLEncoding.EncodeToString([]byte(key)),
+		Name:      f.Name(),
+		Size:      f.Size(),
+		FileMtime: f.ModTime().Unix(), // TODO: file time
+	}, nil
 }
 
 func (loc *LocalDrive) List(key string, offset int, limit int) ([]*drive.File, error) {
@@ -58,4 +73,14 @@ func (loc *LocalDrive) Delete(key string) error {
 
 func (loc *LocalDrive) Modify(key string, newFile *drive.File) error {
 	return nil
+}
+
+func (loc *LocalDrive) Bytes(key string) ([]byte, error) {
+
+	dirName := utils.WorkDir("data")
+	bs, err := os.ReadFile(dirName + key)
+	if err != nil {
+		return nil, err
+	}
+	return bs, nil
 }

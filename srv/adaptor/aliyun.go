@@ -31,3 +31,7 @@ func (oss *OssDrive) Delete(key string) error {
 func (oss *OssDrive) Modify(key string, newFile *drive.File) error {
 	return nil
 }
+
+func (oss *OssDrive) Bytes(key string) ([]byte, error) {
+	return nil, nil
+}
