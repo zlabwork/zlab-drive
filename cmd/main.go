@@ -7,6 +7,7 @@ import (
 	"drive/app/api"
 	"drive/app/middleware"
 	"flag"
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"gopkg.in/yaml.v3"
@@ -66,7 +67,9 @@ func main() {
 			log.Println(err)
 		}
 	}()
-	log.Println("service is start; port " + os.Getenv("APP_PORT"))
+	fmt.Println("service is start")
+	fmt.Println("service port " + os.Getenv("APP_PORT"))
+	fmt.Println("--------------------")
 
 	c := make(chan os.Signal, 1)
 	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
