@@ -66,7 +66,7 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 3. cache name
 	suf := fmt.Sprintf("_%dx%d", width, height)
-	temp := utils.WorkDir("temp/"+haStr[0:2]) + string(os.PathSeparator) + haStr + suf
+	temp := utils.WorkDir("temp/"+os.Getenv("APP_DRIVE")+haStr[0:2]) + string(os.PathSeparator) + haStr + suf
 
 	// 4. temp is not exist
 	if _, err := os.Stat(temp); err != nil {
