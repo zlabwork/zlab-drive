@@ -1,10 +1,12 @@
 package app
 
 import (
+	"bytes"
 	"crypto/md5"
 	"drive"
 	"drive/app/msg"
 	"drive/app/utils"
+	"drive/srv/adaptor"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
@@ -69,28 +71,41 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	// 4. temp is not exist
 	if _, err := os.Stat(temp); err != nil {
 		if os.IsNotExist(err) {
-			// TODO: fetch from adaptor
-			//fs, err := adaptor.NewAdaptor()
-			//if err != nil {
-			//	return
-			//}
-			//// 1>. fetch
-			//file, err := fs.Get(key)
-			//if err != nil {
-			//	w.Header().Set("Content-Type", "image/svg+xml")
-			//	w.Write([]byte(noPicture))
-			//	return
-			//}
-			filename := utils.WorkDir("data") + key
-
-			// 2>. resize
-			src, err := loadImage(filename)
+			// fetch from adaptor
+			fs, err := adaptor.NewAdaptor()
+			if err != nil {
+				return
+			}
+			// 1>. fetch
+			file, err := fs.Get(key)
 			if err != nil {
 				w.Header().Set("Content-Type", "image/svg+xml")
 				w.Write([]byte(noPicture))
 				return
 			}
-			dst := filterImage(src, size)
+			bs, err := fs.Bytes(file)
+			if err != nil {
+				w.Header().Set("Content-Type", "image/svg+xml")
+				w.Write([]byte(noPicture))
+				return
+			}
+
+			// 2>. create image.Image
+			rd := bytes.NewReader(bs)
+			if err != nil {
+				w.Header().Set("Content-Type", "image/svg+xml")
+				w.Write([]byte(noPicture))
+				return
+			}
+			srcImg, _, err := image.Decode(rd)
+			if err != nil {
+				w.Header().Set("Content-Type", "image/svg+xml")
+				w.Write([]byte(noPicture))
+				return
+			}
+
+			// 3>. resize & save
+			dst := resizeImage(srcImg, size)
 			err = saveImage(temp, dst)
 			if err != nil {
 				log.Println("error when save image", err)
@@ -115,7 +130,7 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // @docs https://github.com/disintegration/gift
-func filterImage(src image.Image, s string) *image.RGBA {
+func resizeImage(src image.Image, s string) *image.RGBA {
 	// 1. Create a new filter list and add some filters.
 	var w, h int
 	var g *gift.GIFT
@@ -153,17 +168,4 @@ func saveImage(filename string, img image.Image) error {
 		return err
 	}
 	return nil
-}
-
-func loadImage(filename string) (image.Image, error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	img, _, err := image.Decode(f)
-	if err != nil {
-		return nil, err
-	}
-	return img, nil
 }
