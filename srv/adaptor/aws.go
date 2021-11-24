@@ -32,6 +32,6 @@ func (s3 *S3Drive) Modify(key string, newFile *drive.File) error {
 	return nil
 }
 
-func (s3 *S3Drive) Bytes(key string) ([]byte, error) {
+func (s3 *S3Drive) Bytes(file *drive.File) ([]byte, error) {
 	return nil, nil
 }

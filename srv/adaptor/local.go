@@ -75,10 +75,13 @@ func (loc *LocalDrive) Modify(key string, newFile *drive.File) error {
 	return nil
 }
 
-func (loc *LocalDrive) Bytes(key string) ([]byte, error) {
-
+func (loc *LocalDrive) Bytes(file *drive.File) ([]byte, error) {
+	k, err := base64.RawURLEncoding.DecodeString(file.Key)
+	if err != nil {
+		return nil, err
+	}
 	dirName := utils.WorkDir("data")
-	bs, err := os.ReadFile(dirName + key)
+	bs, err := os.ReadFile(dirName + string(k))
 	if err != nil {
 		return nil, err
 	}

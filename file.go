@@ -28,5 +28,5 @@ type FileService interface {
 	Create(file *File) error
 	Delete(key string) error
 	Modify(key string, newFile *File) error
-	Bytes(key string) ([]byte, error)
+	Bytes(file *File) ([]byte, error)
 }

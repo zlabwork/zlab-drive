@@ -32,6 +32,6 @@ func (oss *OssDrive) Modify(key string, newFile *drive.File) error {
 	return nil
 }
 
-func (oss *OssDrive) Bytes(key string) ([]byte, error) {
+func (oss *OssDrive) Bytes(file *drive.File) ([]byte, error) {
 	return nil, nil
 }
