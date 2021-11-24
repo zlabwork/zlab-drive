@@ -6,6 +6,8 @@ import (
 	"encoding/base64"
 	"io/ioutil"
 	"os"
+	"strconv"
+	"time"
 )
 
 type LocalDrive struct {
@@ -68,6 +70,18 @@ func (loc *LocalDrive) Create(file *drive.File) error {
 }
 
 func (loc *LocalDrive) Delete(key string) error {
+
+	// TODO: clear cache
+	dirName := utils.WorkDir("data")
+	trash := utils.WorkDir("trash")
+	path1 := dirName + key
+	path2 := trash + key + strconv.FormatInt(time.Now().UnixNano(), 10)
+
+	//err := os.RemoveAll(dirName + key)
+	err := os.Rename(path1, path2)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
