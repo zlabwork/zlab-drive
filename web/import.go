@@ -3,7 +3,7 @@ package web
 import (
 	"crypto/md5"
 	"drive"
-	"drive/srv/db/mysql"
+	"drive/srv/repository/mysql"
 	"drive/utils"
 	"encoding/hex"
 	"github.com/google/uuid"
