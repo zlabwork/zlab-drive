@@ -3,11 +3,10 @@ package main
 import (
 	"context"
 	"drive"
-	"drive/app"
-	"drive/app/api"
-	"drive/app/middleware"
+	"drive/middleware"
+	"drive/restful"
+	"drive/web"
 	"flag"
-	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"gopkg.in/yaml.v3"
@@ -41,15 +40,15 @@ func main() {
 
 	r := mux.NewRouter()
 	r.Use(middleware.LoggingMiddleware)
-	r.HandleFunc("/", app.DefaultHandler)
-	r.HandleFunc("/home", app.HomeHandler)
-	r.HandleFunc("/path/{id:[0-9a-zA-Z_-]+}", api.PathHandler).Methods("GET")
-	r.HandleFunc("/files/{id:[0-9a-zA-Z_-]+}", api.FilesHandler).Methods("GET")
-	r.HandleFunc("/do/{id:[0-9a-zA-Z_-]+}", api.DoHandler).Methods("POST")
-	r.HandleFunc("/preview/{id:[0-9a-zA-Z_-]+}", app.PreviewHandler).Methods("GET")
-	r.HandleFunc("/holder/{id:[0-9x]+}", app.Placeholder).Methods("GET")
-	r.HandleFunc("/upload", app.DefaultHandler).Methods("PUT")
-	r.HandleFunc("/import", app.ImportHandler).Methods("GET")
+	r.HandleFunc("/", web.DefaultHandler)
+	r.HandleFunc("/home", web.HomeHandler)
+	r.HandleFunc("/path/{id:[0-9a-zA-Z_-]+}", restful.PathHandler).Methods("GET")
+	r.HandleFunc("/files/{id:[0-9a-zA-Z_-]+}", restful.FilesHandler).Methods("GET")
+	r.HandleFunc("/do/{id:[0-9a-zA-Z_-]+}", restful.DoHandler).Methods("POST")
+	r.HandleFunc("/preview/{id:[0-9a-zA-Z_-]+}", web.PreviewHandler).Methods("GET")
+	r.HandleFunc("/holder/{id:[0-9x]+}", web.Placeholder).Methods("GET")
+	r.HandleFunc("/upload", web.DefaultHandler).Methods("PUT")
+	r.HandleFunc("/import", web.ImportHandler).Methods("GET")
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("../"+dir))))
 
 	srv := &http.Server{
@@ -66,9 +65,7 @@ func main() {
 			log.Println(err)
 		}
 	}()
-	fmt.Println("service is start")
-	fmt.Println("service port " + os.Getenv("APP_PORT"))
-	fmt.Println("--------------------")
+	drive.Banner("Service port :" + os.Getenv("APP_PORT"))
 
 	c := make(chan os.Signal, 1)
 	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)

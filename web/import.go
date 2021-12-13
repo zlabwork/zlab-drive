@@ -1,10 +1,10 @@
-package app
+package web
 
 import (
 	"crypto/md5"
 	"drive"
-	"drive/app/utils"
 	"drive/srv/db/mysql"
+	"drive/utils"
 	"encoding/hex"
 	"github.com/google/uuid"
 	"log"

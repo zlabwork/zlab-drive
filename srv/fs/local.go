@@ -1,8 +1,8 @@
-package adaptor
+package fs
 
 import (
 	"drive"
-	"drive/app/utils"
+	"drive/utils"
 	"encoding/base64"
 	"io/ioutil"
 	"os"

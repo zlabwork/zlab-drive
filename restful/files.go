@@ -1,9 +1,9 @@
-package api
+package restful
 
 import (
 	"drive"
-	"drive/app/msg"
-	"drive/srv/adaptor"
+	"drive/msg"
+	"drive/srv"
 	"encoding/base64"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -27,7 +27,7 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// fs & fetch
-	fs, err := adaptor.NewAdaptor()
+	fs, err := srv.NewFileService()
 	if err != nil {
 		drive.ResponseJson(w, drive.JsonError{
 			Code:    msg.Err,

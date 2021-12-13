@@ -1,12 +1,12 @@
-package app
+package web
 
 import (
 	"bytes"
 	"crypto/md5"
 	"drive"
-	"drive/app/msg"
-	"drive/app/utils"
-	"drive/srv/adaptor"
+	"drive/msg"
+	"drive/srv"
+	"drive/utils"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
@@ -72,7 +72,7 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	if _, err := os.Stat(temp); err != nil {
 		if os.IsNotExist(err) {
 			// fetch from adaptor
-			fs, err := adaptor.NewAdaptor()
+			fs, err := srv.NewFileService()
 			if err != nil {
 				return
 			}

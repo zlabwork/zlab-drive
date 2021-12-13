@@ -21,12 +21,3 @@ type Attr struct {
 	Height   int
 	Duration int
 }
-
-type FileService interface {
-	Get(key string) (*File, error)
-	List(key string, offset int, limit int) ([]*File, error)
-	Create(file *File) error
-	Delete(key string) error
-	Modify(key string, newFile *File) error
-	Bytes(file *File) ([]byte, error)
-}

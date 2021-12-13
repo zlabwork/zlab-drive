@@ -1,8 +1,8 @@
-package api
+package restful
 
 import (
 	"drive"
-	"drive/app/msg"
+	"drive/msg"
 	"net/http"
 )
 
