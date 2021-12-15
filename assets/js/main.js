@@ -95,14 +95,14 @@ class Breadcrumb extends React.Component {
 
     handleClick(uuid, event) {
         // path
-        utilsBox.httpRequest("get", "/path/" + uuid).then((resp) => {
+        utilsBox.httpRequest("get", "/api/path/" + uuid).then((resp) => {
             if (resp.status != 200 || resp.data.code != 200) {
                 return
             }
             this.props.onSetState({local: resp.data.data});
         })
         // files
-        utilsBox.httpRequest("get", "/files/" + uuid).then((resp) => {
+        utilsBox.httpRequest("get", "/api/files/" + uuid).then((resp) => {
             if (resp.status != 200 || resp.data.code != 200) {
                 return
             }
@@ -134,7 +134,7 @@ class FileView extends React.Component {
     }
 
     componentDidMount() {
-        utilsBox.httpRequest("get", "/files/0").then((resp) => {
+        utilsBox.httpRequest("get", "/api/files/0").then((resp) => {
             if (resp.status != 200 || resp.data.code != 200) {
                 return
             }
@@ -159,14 +159,14 @@ class FileView extends React.Component {
             return
         }
         // files
-        utilsBox.httpRequest("get", "/files/" + item.key).then((resp) => {
+        utilsBox.httpRequest("get", "/api/files/" + item.key).then((resp) => {
             if (resp.status != 200 || resp.data.code != 200) {
                 return
             }
             this.handleChangeFiles(resp.data.data)
         })
         // path
-        // utilsBox.httpRequest("get", "/path/" + item.key).then((resp) => {
+        // utilsBox.httpRequest("get", "/api/path/" + item.key).then((resp) => {
         //     if (resp.status != 200 || resp.data.code != 200) {
         //         return
         //     }
