@@ -12,14 +12,14 @@
   <link rel="shortcut icon" href="../assets/img/favicon.ico">
 
   <!-- App css -->
-  <link href="../assets/css/config/default/bootstrap.min.css" rel="stylesheet" type="text/css" id="bs-default-stylesheet" />
-  <link href="../assets/css/config/default/app.min.css" rel="stylesheet" type="text/css" id="app-default-stylesheet" />
+  <link href="../assets/v2/css/config/default/bootstrap.min.css" rel="stylesheet" type="text/css" id="bs-default-stylesheet" />
+  <link href="../assets/v2/css/config/default/app.min.css" rel="stylesheet" type="text/css" id="app-default-stylesheet" />
 
-  <link href="../assets/css/config/default/bootstrap-dark.min.css" rel="stylesheet" type="text/css" id="bs-dark-stylesheet" />
-  <link href="../assets/css/config/default/app-dark.min.css" rel="stylesheet" type="text/css" id="app-dark-stylesheet" />
+  <link href="../assets/v2/css/config/default/bootstrap-dark.min.css" rel="stylesheet" type="text/css" id="bs-dark-stylesheet" />
+  <link href="../assets/v2/css/config/default/app-dark.min.css" rel="stylesheet" type="text/css" id="app-dark-stylesheet" />
 
   <!-- icons -->
-  <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/v2/css/icons.min.css" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -30,7 +30,7 @@
 <div id="wrapper">
 
   <!-- Topbar Start -->
-  {{template "drive_header.html"}}
+  {{template "header.html"}}
   <!-- end Topbar -->
 
 
@@ -51,7 +51,7 @@
             <div class="card">
               <div class="card-body">
                 <!-- Left sidebar -->
-                {{template "drive_sidebar.html"}}
+                {{template "sidebar.html"}}
                 <!-- End Left sidebar -->
 
                 <div class="inbox-rightbar">
@@ -467,7 +467,7 @@
     </div> <!-- content -->
 
     <!-- Footer Start -->
-    {{template "drive_footer.html"}}
+    {{template "footer.html"}}
     <!-- end Footer -->
 
   </div>
@@ -481,17 +481,17 @@
 <!-- END wrapper -->
 
 <!-- Right Sidebar -->
-{{template "drive_setting.html"}}
+{{template "setting.html"}}
 <!-- /Right-bar -->
 
 <!-- Right bar overlay-->
 <div class="rightbar-overlay"></div>
 
 <!-- Vendor js -->
-<script src="../assets/js/vendor.min.js"></script>
+<script src="../assets/v2/js/vendor.min.js"></script>
 
 <!-- App js -->
-<script src="../assets/js/app.min.js"></script>
+<script src="../assets/v2/js/app.min.js"></script>
 
 </body>
 </html>

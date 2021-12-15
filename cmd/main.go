@@ -41,14 +41,14 @@ func main() {
 	r := mux.NewRouter()
 	r.Use(middleware.LoggingMiddleware)
 	r.HandleFunc("/", web.DefaultHandler)
-	r.HandleFunc("/home", web.HomeHandler)
-	r.HandleFunc("/api/path/{id:[0-9a-zA-Z_-]+}", restful.PathHandler).Methods("GET")
-	r.HandleFunc("/api/files/{id:[0-9a-zA-Z_-]+}", restful.FilesHandler).Methods("GET")
-	r.HandleFunc("/api/do/{id:[0-9a-zA-Z_-]+}", restful.DoHandler).Methods("POST")
+	r.HandleFunc("/home/{version:[0-9a-zA-Z]+}", web.HomeHandler)
 	r.HandleFunc("/preview/{id:[0-9a-zA-Z_-]+}", web.PreviewHandler).Methods("GET")
 	r.HandleFunc("/holder/{id:[0-9x]+}", web.Placeholder).Methods("GET")
 	r.HandleFunc("/upload", web.DefaultHandler).Methods("PUT")
 	r.HandleFunc("/import", web.ImportHandler).Methods("GET")
+	r.HandleFunc("/api/path/{id:[0-9a-zA-Z_-]+}", restful.PathHandler).Methods("GET")
+	r.HandleFunc("/api/files/{id:[0-9a-zA-Z_-]+}", restful.FilesHandler).Methods("GET")
+	r.HandleFunc("/api/do/{id:[0-9a-zA-Z_-]+}", restful.DoHandler).Methods("POST")
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("../"+dir))))
 
 	srv := &http.Server{
