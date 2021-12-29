@@ -21,3 +21,10 @@ type Attr struct {
 	Height   int
 	Duration int
 }
+
+const (
+	ImageSizeDefault = iota
+	ImageSizeSmall
+	ImageSizeMiddle
+	ImageSizeLarge
+)

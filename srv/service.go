@@ -3,6 +3,7 @@ package srv
 import (
 	"drive"
 	"drive/srv/fs"
+	"encoding/base64"
 	"fmt"
 	"os"
 	"strconv"
@@ -22,11 +23,26 @@ type FileService struct {
 }
 
 func (fs *FileService) Get(key string) (*drive.File, error) {
-	return fs.Repo.Get(key)
+
+	id, err := base64.RawURLEncoding.DecodeString(key)
+	if err != nil {
+		return nil, err
+	}
+	return fs.Repo.Get(string(id))
 }
 
 func (fs *FileService) List(key string, offset int, limit int) ([]*drive.File, error) {
-	return fs.Repo.List(key, offset, limit)
+
+	id := ""
+	if len(key) > 2 {
+		s, err := base64.RawURLEncoding.DecodeString(key)
+		if err != nil {
+			return nil, err
+		}
+		id = string(s)
+	}
+
+	return fs.Repo.List(id, offset, limit)
 }
 
 func (fs *FileService) Create(file *drive.File) error {
@@ -34,7 +50,13 @@ func (fs *FileService) Create(file *drive.File) error {
 }
 
 func (fs *FileService) Delete(key string) error {
-	return fs.Repo.Delete(key)
+
+	id, err := base64.RawURLEncoding.DecodeString(key)
+	if err != nil {
+		return err
+	}
+
+	return fs.Repo.Delete(string(id))
 }
 
 func (fs *FileService) Modify(key string, newFile *drive.File) error {

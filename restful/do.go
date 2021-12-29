@@ -4,10 +4,10 @@ import (
 	"drive"
 	"drive/msg"
 	"drive/srv"
-	"encoding/base64"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"strings"
 )
 
 func DoHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,15 +15,7 @@ func DoHandler(w http.ResponseWriter, r *http.Request) {
 	// 1. param
 	action := r.PostFormValue("action")
 	vars := mux.Vars(r)
-	s, err := base64.RawURLEncoding.DecodeString(vars["id"])
-	if err != nil {
-		drive.ResponseJson(w, drive.JsonError{
-			Code:    msg.ErrEncode,
-			Message: msg.Text(msg.ErrEncode),
-		})
-		return
-	}
-	key := string(s)
+	key := strings.TrimSpace(vars["id"])
 
 	// 2. adaptor
 	fs, err := srv.NewFileService()

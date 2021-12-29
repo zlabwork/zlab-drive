@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"crypto/md5"
 	"drive"
-	"drive/msg"
 	"drive/srv"
 	"drive/utils"
-	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"github.com/disintegration/gift"
@@ -34,39 +32,29 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 1. key & hash
 	id := mux.Vars(r)["id"]
-	s, err := base64.RawURLEncoding.DecodeString(id)
-	if err != nil {
-		drive.ResponseJson(w, drive.JsonError{
-			Code:    msg.ErrEncode,
-			Message: msg.Text(msg.ErrEncode),
-		})
-		return
-	}
-	key := string(s)
 	h := md5.New()
-	h.Write(s)
-	ha := h.Sum(nil)
-	haStr := hex.EncodeToString(ha)
+	h.Write([]byte(id))
+	ha := hex.EncodeToString(h.Sum(nil))
 
 	// 2. width & height
 	vars := r.URL.Query()
 	name := strings.ToLower(vars.Get("name"))
 
 	var width, height int
-	var size string
+	var size = drive.ImageSizeDefault
 	if name == "large" {
 		width = drive.Cfg.Image.Large.Width
 		height = drive.Cfg.Image.Large.Height
-		size = "large"
+		size = drive.ImageSizeLarge
 	} else {
 		width = drive.Cfg.Image.Thumb.Width
 		height = drive.Cfg.Image.Thumb.Height
-		size = "small"
+		size = drive.ImageSizeSmall
 	}
 
 	// 3. cache name
 	suf := fmt.Sprintf("_%dx%d", width, height)
-	temp := utils.WorkDir("temp/"+os.Getenv("APP_DRIVE")+haStr[0:2]) + string(os.PathSeparator) + haStr + suf
+	temp := utils.WorkDir("temp/"+os.Getenv("APP_DRIVE")+ha[:2]) + string(os.PathSeparator) + ha + suf
 
 	// 4. temp is not exist
 	if _, err := os.Stat(temp); err != nil {
@@ -77,7 +65,7 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			// 1>. fetch
-			file, err := fs.Get(key)
+			file, err := fs.Get(id)
 			if err != nil {
 				w.Header().Set("Content-Type", "image/svg+xml")
 				w.Write([]byte(noPicture))
@@ -123,24 +111,24 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	// w.Header().Set("Last-Modified", "")
 	w.Header().Set("Cache-Control", "private, max-age=10800, pre-check=10800")
 	w.Header().Set("Content-type", "image/png")
-	w.Header().Set("ETag", id)
+	w.Header().Set("ETag", id) // TODO: id need to modify
 	w.Header().Set("Expires", tf)
 	w.Header().Set("Date", tf)
 	w.Write(bs)
 }
 
 // @docs https://github.com/disintegration/gift
-func resizeImage(src image.Image, s string) *image.RGBA {
+func resizeImage(src image.Image, size int) *image.RGBA {
 	// 1. Create a new filter list and add some filters.
 	var w, h int
 	var g *gift.GIFT
-	if s == "small" {
+	if size == drive.ImageSizeSmall {
 		w = drive.Cfg.Image.Thumb.Width
 		h = drive.Cfg.Image.Thumb.Height
 		g = gift.New(
 			gift.ResizeToFill(w, h, gift.LanczosResampling, gift.CenterAnchor),
 		)
-	} else if s == "large" {
+	} else if size == drive.ImageSizeLarge {
 		w = drive.Cfg.Image.Large.Width
 		h = drive.Cfg.Image.Large.Height
 		g = gift.New(
