@@ -1,9 +1,9 @@
 package restful
 
 import (
-	"drive"
-	"drive/msg"
-	"drive/srv"
+	"app"
+	"app/msg"
+	"app/srv"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -17,7 +17,7 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 	// fs & fetch
 	fs, err := srv.NewFileService()
 	if err != nil {
-		drive.ResponseJson(w, drive.JsonError{
+		app.ResponseJson(w, app.JsonError{
 			Code:    msg.Err,
 			Message: msg.Text(msg.Err),
 		})
@@ -25,7 +25,7 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	data, err := fs.List(key, 0, 20) // TODO: offset & limit
 	if err != nil {
-		drive.ResponseJson(w, drive.JsonError{
+		app.ResponseJson(w, app.JsonError{
 			Code:    msg.ErrNoData,
 			Message: msg.Text(msg.ErrNoData),
 		})
@@ -33,7 +33,7 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// output
-	drive.ResponseJson(w, drive.JsonOK{
+	app.ResponseJson(w, app.JsonOK{
 		Code:    msg.OK,
 		Message: msg.Text(msg.OK),
 		Data:    data,

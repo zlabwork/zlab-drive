@@ -1,11 +1,11 @@
 package main
 
 import (
+	"app"
+	"app/middleware"
+	"app/restful"
+	"app/web"
 	"context"
-	"drive"
-	"drive/middleware"
-	"drive/restful"
-	"drive/web"
 	"flag"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -26,7 +26,7 @@ func main() {
 	}
 	// app.yaml
 	bs, err := ioutil.ReadFile("../config/app.yaml")
-	err = yaml.Unmarshal(bs, &drive.Cfg)
+	err = yaml.Unmarshal(bs, &app.Cfg)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
@@ -65,7 +65,7 @@ func main() {
 			log.Println(err)
 		}
 	}()
-	drive.Banner("Service port :" + os.Getenv("APP_PORT"))
+	app.Banner("Service port :" + os.Getenv("APP_PORT"))
 
 	c := make(chan os.Signal, 1)
 	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)

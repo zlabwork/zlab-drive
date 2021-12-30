@@ -1,10 +1,10 @@
 package web
 
 import (
+	"app"
+	"app/srv/repository/mysql"
+	"app/utils"
 	"crypto/md5"
-	"drive"
-	"drive/srv/repository/mysql"
-	"drive/utils"
 	"encoding/hex"
 	"github.com/google/uuid"
 	"log"
@@ -48,7 +48,7 @@ func listFile(parentId int64, filename string) error {
 		}
 		ts := time.Now().Unix()
 		if item.IsDir() {
-			file := &drive.File{
+			file := &app.File{
 				// UserId:    123456,
 				// Parent:    parentId,
 				Uuid:      uuid.New().String(),
@@ -82,7 +82,7 @@ func listFile(parentId int64, filename string) error {
 				log.Println(err)
 			}
 
-			file := &drive.File{
+			file := &app.File{
 				// UserId:    123456,
 				// Parent:    parentId,
 				Uuid:      uuid.New().String(),

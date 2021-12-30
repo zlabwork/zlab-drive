@@ -1,14 +1,14 @@
 package restful
 
 import (
-	"drive"
-	"drive/msg"
+	"app"
+	"app/msg"
 	"net/http"
 )
 
 func PathHandler(w http.ResponseWriter, r *http.Request) {
 
-	drive.ResponseJson(w, drive.JsonOK{
+	app.ResponseJson(w, app.JsonOK{
 		Code:    msg.OK,
 		Message: msg.Text(msg.OK),
 	})

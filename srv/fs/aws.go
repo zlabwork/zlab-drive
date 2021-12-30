@@ -1,6 +1,6 @@
 package fs
 
-import "drive"
+import "app"
 
 type S3Drive struct {
 	Name string
@@ -12,15 +12,15 @@ func NewS3Drive() *S3Drive {
 	}
 }
 
-func (s3 *S3Drive) Get(key string) (*drive.File, error) {
+func (s3 *S3Drive) Get(key string) (*app.File, error) {
 	return nil, nil
 }
 
-func (s3 *S3Drive) List(key string, offset int, limit int) ([]*drive.File, error) {
+func (s3 *S3Drive) List(key string, offset int, limit int) ([]*app.File, error) {
 	return nil, nil
 }
 
-func (s3 *S3Drive) Create(file *drive.File) error {
+func (s3 *S3Drive) Create(file *app.File) error {
 	return nil
 }
 
@@ -28,10 +28,10 @@ func (s3 *S3Drive) Delete(key string) error {
 	return nil
 }
 
-func (s3 *S3Drive) Modify(key string, newFile *drive.File) error {
+func (s3 *S3Drive) Modify(key string, newFile *app.File) error {
 	return nil
 }
 
-func (s3 *S3Drive) Bytes(file *drive.File) ([]byte, error) {
+func (s3 *S3Drive) Bytes(file *app.File) ([]byte, error) {
 	return nil, nil
 }

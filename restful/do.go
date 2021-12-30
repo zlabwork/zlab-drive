@@ -1,9 +1,9 @@
 package restful
 
 import (
-	"drive"
-	"drive/msg"
-	"drive/srv"
+	"app"
+	"app/msg"
+	"app/srv"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -20,7 +20,7 @@ func DoHandler(w http.ResponseWriter, r *http.Request) {
 	// 2. adaptor
 	fs, err := srv.NewFileService()
 	if err != nil {
-		drive.ResponseJson(w, drive.JsonError{
+		app.ResponseJson(w, app.JsonError{
 			Code:    msg.Err,
 			Message: msg.Text(msg.Err),
 		})
@@ -31,7 +31,7 @@ func DoHandler(w http.ResponseWriter, r *http.Request) {
 	switch action {
 	case "delete":
 		if fs.Delete(key) != nil {
-			drive.ResponseJson(w, drive.JsonError{
+			app.ResponseJson(w, app.JsonError{
 				Code:    msg.ErrProcess,
 				Message: msg.Text(msg.ErrProcess),
 			})
@@ -40,14 +40,14 @@ func DoHandler(w http.ResponseWriter, r *http.Request) {
 	case "move":
 		fmt.Println("move")
 	default:
-		drive.ResponseJson(w, drive.JsonError{
+		app.ResponseJson(w, app.JsonError{
 			Code:    msg.ErrParameter,
 			Message: msg.Text(msg.ErrParameter),
 		})
 		return
 	}
 
-	drive.ResponseJson(w, drive.JsonOK{
+	app.ResponseJson(w, app.JsonOK{
 		Code:    msg.OK,
 		Message: msg.Text(msg.OK),
 	})

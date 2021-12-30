@@ -1,8 +1,8 @@
 package srv
 
 import (
-	"drive"
-	"drive/srv/fs"
+	"app"
+	"app/srv/fs"
 	"encoding/base64"
 	"fmt"
 	"os"
@@ -10,19 +10,19 @@ import (
 )
 
 type FileRepository interface {
-	Get(key string) (*drive.File, error)
-	List(key string, offset int, limit int) ([]*drive.File, error)
-	Create(file *drive.File) error
+	Get(key string) (*app.File, error)
+	List(key string, offset int, limit int) ([]*app.File, error)
+	Create(file *app.File) error
 	Delete(key string) error
-	Modify(key string, newFile *drive.File) error
-	Bytes(file *drive.File) ([]byte, error)
+	Modify(key string, newFile *app.File) error
+	Bytes(file *app.File) ([]byte, error)
 }
 
 type FileService struct {
 	Repo FileRepository
 }
 
-func (fs *FileService) Get(key string) (*drive.File, error) {
+func (fs *FileService) Get(key string) (*app.File, error) {
 
 	id, err := base64.RawURLEncoding.DecodeString(key)
 	if err != nil {
@@ -31,7 +31,7 @@ func (fs *FileService) Get(key string) (*drive.File, error) {
 	return fs.Repo.Get(string(id))
 }
 
-func (fs *FileService) List(key string, offset int, limit int) ([]*drive.File, error) {
+func (fs *FileService) List(key string, offset int, limit int) ([]*app.File, error) {
 
 	id := ""
 	if len(key) > 2 {
@@ -45,7 +45,7 @@ func (fs *FileService) List(key string, offset int, limit int) ([]*drive.File, e
 	return fs.Repo.List(id, offset, limit)
 }
 
-func (fs *FileService) Create(file *drive.File) error {
+func (fs *FileService) Create(file *app.File) error {
 	return fs.Repo.Create(file)
 }
 
@@ -59,11 +59,11 @@ func (fs *FileService) Delete(key string) error {
 	return fs.Repo.Delete(string(id))
 }
 
-func (fs *FileService) Modify(key string, newFile *drive.File) error {
+func (fs *FileService) Modify(key string, newFile *app.File) error {
 	return fs.Repo.Modify(key, newFile)
 }
 
-func (fs *FileService) Bytes(file *drive.File) ([]byte, error) {
+func (fs *FileService) Bytes(file *app.File) ([]byte, error) {
 	return fs.Repo.Bytes(file)
 }
 
@@ -76,13 +76,13 @@ func NewFileService() (*FileService, error) {
 
 	switch appDrive {
 
-	case drive.LocalDrive:
+	case app.LocalDrive:
 		return &FileService{Repo: fs.NewLocalDrive()}, nil
 
-	case drive.S3Drive:
+	case app.S3Drive:
 		return &FileService{Repo: fs.NewS3Drive()}, nil
 
-	case drive.OssDrive:
+	case app.OssDrive:
 		return &FileService{Repo: fs.NewOssDrive()}, nil
 
 	}

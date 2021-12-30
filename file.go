@@ -1,4 +1,4 @@
-package drive
+package app
 
 type File struct {
 	Uuid      string `json:"uuid"`

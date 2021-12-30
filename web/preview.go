@@ -1,11 +1,11 @@
 package web
 
 import (
+	"app"
+	"app/srv"
+	"app/utils"
 	"bytes"
 	"crypto/md5"
-	"drive"
-	"drive/srv"
-	"drive/utils"
 	"encoding/hex"
 	"fmt"
 	"github.com/disintegration/gift"
@@ -41,15 +41,15 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	name := strings.ToLower(vars.Get("name"))
 
 	var width, height int
-	var size = drive.ImageSizeDefault
+	var size = app.ImageSizeDefault
 	if name == "large" {
-		width = drive.Cfg.Image.Large.Width
-		height = drive.Cfg.Image.Large.Height
-		size = drive.ImageSizeLarge
+		width = app.Cfg.Image.Large.Width
+		height = app.Cfg.Image.Large.Height
+		size = app.ImageSizeLarge
 	} else {
-		width = drive.Cfg.Image.Thumb.Width
-		height = drive.Cfg.Image.Thumb.Height
-		size = drive.ImageSizeSmall
+		width = app.Cfg.Image.Thumb.Width
+		height = app.Cfg.Image.Thumb.Height
+		size = app.ImageSizeSmall
 	}
 
 	// 3. cache name
@@ -122,15 +122,15 @@ func resizeImage(src image.Image, size int) *image.RGBA {
 	// 1. Create a new filter list and add some filters.
 	var w, h int
 	var g *gift.GIFT
-	if size == drive.ImageSizeSmall {
-		w = drive.Cfg.Image.Thumb.Width
-		h = drive.Cfg.Image.Thumb.Height
+	if size == app.ImageSizeSmall {
+		w = app.Cfg.Image.Thumb.Width
+		h = app.Cfg.Image.Thumb.Height
 		g = gift.New(
 			gift.ResizeToFill(w, h, gift.LanczosResampling, gift.CenterAnchor),
 		)
-	} else if size == drive.ImageSizeLarge {
-		w = drive.Cfg.Image.Large.Width
-		h = drive.Cfg.Image.Large.Height
+	} else if size == app.ImageSizeLarge {
+		w = app.Cfg.Image.Large.Width
+		h = app.Cfg.Image.Large.Height
 		g = gift.New(
 			gift.ResizeToFit(w, h, gift.LanczosResampling),
 		)

@@ -1,8 +1,8 @@
 package fs
 
 import (
-	"drive"
-	"drive/utils"
+	"app"
+	"app/utils"
 	"encoding/base64"
 	"io/ioutil"
 	"os"
@@ -20,7 +20,7 @@ func NewLocalDrive() *LocalDrive {
 	}
 }
 
-func (loc *LocalDrive) Get(key string) (*drive.File, error) {
+func (loc *LocalDrive) Get(key string) (*app.File, error) {
 
 	dirName := utils.WorkDir("data")
 	f, err := os.Stat(dirName + key)
@@ -28,7 +28,7 @@ func (loc *LocalDrive) Get(key string) (*drive.File, error) {
 		return nil, err
 	}
 
-	return &drive.File{
+	return &app.File{
 		MimeType:  "",
 		Hash:      "",
 		Key:       base64.RawURLEncoding.EncodeToString([]byte(key)),
@@ -38,13 +38,13 @@ func (loc *LocalDrive) Get(key string) (*drive.File, error) {
 	}, nil
 }
 
-func (loc *LocalDrive) List(key string, offset int, limit int) ([]*drive.File, error) {
+func (loc *LocalDrive) List(key string, offset int, limit int) ([]*app.File, error) {
 
 	if key == "/" {
 		key = ""
 	}
 
-	var fs []*drive.File
+	var fs []*app.File
 	dirName := utils.WorkDir("data")
 	files, _ := ioutil.ReadDir(dirName + key)
 	for _, f := range files {
@@ -52,7 +52,7 @@ func (loc *LocalDrive) List(key string, offset int, limit int) ([]*drive.File, e
 		if f.IsDir() {
 			mime = "folder"
 		}
-		obj := &drive.File{
+		obj := &app.File{
 			MimeType:  mime,
 			Hash:      "",
 			Key:       base64.RawURLEncoding.EncodeToString([]byte(key + "/" + f.Name())),
@@ -65,7 +65,7 @@ func (loc *LocalDrive) List(key string, offset int, limit int) ([]*drive.File, e
 	return fs, nil
 }
 
-func (loc *LocalDrive) Create(file *drive.File) error {
+func (loc *LocalDrive) Create(file *app.File) error {
 	return nil
 }
 
@@ -85,11 +85,11 @@ func (loc *LocalDrive) Delete(key string) error {
 	return nil
 }
 
-func (loc *LocalDrive) Modify(key string, newFile *drive.File) error {
+func (loc *LocalDrive) Modify(key string, newFile *app.File) error {
 	return nil
 }
 
-func (loc *LocalDrive) Bytes(file *drive.File) ([]byte, error) {
+func (loc *LocalDrive) Bytes(file *app.File) ([]byte, error) {
 	k, err := base64.RawURLEncoding.DecodeString(file.Key)
 	if err != nil {
 		return nil, err

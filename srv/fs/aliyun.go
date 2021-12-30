@@ -1,6 +1,6 @@
 package fs
 
-import "drive"
+import "app"
 
 type OssDrive struct {
 	Name string
@@ -12,15 +12,15 @@ func NewOssDrive() *OssDrive {
 	}
 }
 
-func (oss *OssDrive) Get(key string) (*drive.File, error) {
+func (oss *OssDrive) Get(key string) (*app.File, error) {
 	return nil, nil
 }
 
-func (oss *OssDrive) List(key string, offset int, limit int) ([]*drive.File, error) {
+func (oss *OssDrive) List(key string, offset int, limit int) ([]*app.File, error) {
 	return nil, nil
 }
 
-func (oss *OssDrive) Create(file *drive.File) error {
+func (oss *OssDrive) Create(file *app.File) error {
 	return nil
 }
 
@@ -28,10 +28,10 @@ func (oss *OssDrive) Delete(key string) error {
 	return nil
 }
 
-func (oss *OssDrive) Modify(key string, newFile *drive.File) error {
+func (oss *OssDrive) Modify(key string, newFile *app.File) error {
 	return nil
 }
 
-func (oss *OssDrive) Bytes(file *drive.File) ([]byte, error) {
+func (oss *OssDrive) Bytes(file *app.File) ([]byte, error) {
 	return nil, nil
 }

@@ -1,4 +1,4 @@
-package drive
+package app
 
 var Cfg = Yaml{}
 
