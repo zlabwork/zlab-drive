@@ -40,6 +40,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.Use(middleware.LoggingMiddleware)
+	r.Use(middleware.AuthMiddleware)
 	r.HandleFunc("/", web.DefaultHandler)
 	r.HandleFunc("/home/{version:[0-9a-zA-Z]+}", web.HomeHandler)
 	r.HandleFunc("/preview/{id:[0-9a-zA-Z_-]+}", web.PreviewHandler).Methods("GET")

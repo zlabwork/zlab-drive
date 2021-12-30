@@ -34,7 +34,7 @@ func (loc *LocalDrive) Get(key string) (*app.File, error) {
 		Key:       base64.RawURLEncoding.EncodeToString([]byte(key)),
 		Name:      f.Name(),
 		Size:      f.Size(),
-		FileMtime: f.ModTime().Unix(), // TODO: file time
+		FileMtime: f.ModTime(), // TODO: file time
 	}, nil
 }
 
@@ -58,7 +58,7 @@ func (loc *LocalDrive) List(key string, offset int, limit int) ([]*app.File, err
 			Key:       base64.RawURLEncoding.EncodeToString([]byte(key + "/" + f.Name())),
 			Name:      f.Name(),
 			Size:      f.Size(),
-			FileMtime: f.ModTime().Unix(), // TODO: https://github.com/djherbis/times
+			FileMtime: f.ModTime(), // TODO: https://github.com/djherbis/times
 		}
 		fs = append(fs, obj)
 	}

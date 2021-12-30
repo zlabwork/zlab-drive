@@ -2,14 +2,17 @@ package web
 
 import (
 	"app"
+	"app/msg"
 	"app/srv/repository/mysql"
 	"app/utils"
 	"crypto/md5"
+	"encoding/base64"
 	"encoding/hex"
 	"github.com/google/uuid"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -17,15 +20,25 @@ import (
 func ImportHandler(w http.ResponseWriter, r *http.Request) {
 	vars := r.URL.Query()
 	name := vars.Get("name")
-	filename := utils.WorkDir("123456/data") + name
-	listFile(0, filename)
+	uid := r.Context().Value(app.UserIdKey).(int64)
+
+	// checking
+	if uid == 0 || name == "" {
+		app.Response(w, msg.ErrParameter)
+		return
+	}
+
+	base := utils.WorkDir(strconv.FormatInt(uid, 10) + string(os.PathSeparator) + "data")
+	err := listFile(0, base, name)
+	if err != nil {
+		log.Println(err)
+		app.Response(w, msg.ErrProcess)
+	}
 }
 
-// TODO: check code
-func listFile(parentId int64, filename string) error {
-	l := len(utils.WorkDir("123456/data"))
-	path := filename[l:]
+func listFile(parentId int64, base, pathName string) error {
 
+	filename := base + string(os.PathSeparator) + pathName
 	if _, err := os.Stat(filename); err != nil {
 		return err
 	}
@@ -34,7 +47,7 @@ func listFile(parentId int64, filename string) error {
 		return err
 	}
 
-	// todo mysql conn
+	// mysql conn
 	fs, err := mysql.NewFileService()
 	if err != nil {
 		return err
@@ -46,60 +59,52 @@ func listFile(parentId int64, filename string) error {
 		if strings.HasPrefix(item.Name(), ".") {
 			continue
 		}
-		ts := time.Now().Unix()
+		tn := time.Now()
+
+		// if folder
+		var hash, mimeType string
 		if item.IsDir() {
-			file := &app.File{
-				// UserId:    123456,
-				// Parent:    parentId,
-				Uuid:      uuid.New().String(),
-				Name:      item.Name(),
-				MimeType:  "folder",
-				Size:      0,
-				Hash:      "",
-				Key:       path + "/", // FIXME: path to key
-				Attr:      "",
-				FileCtime: ts,
-				FileMtime: ts,
-				Ctime:     ts,
-				Mtime:     ts,
-			}
-			res, err := fs.CreateFile(file)
-			if err != nil {
-				log.Println(err)
-			}
-			id, _ := res.LastInsertId()
-			listFile(id, filename+"/"+item.Name())
+			mimeType = "dir"
 		} else {
-			info, err := item.Info()
-			h := md5.New()
+			mimeType = "image/jpeg" // TODO: 识别文件类型
 			bs, err := os.ReadFile(filename + "/" + item.Name())
 			if err != nil {
-				log.Println(err)
 				return err
 			}
+			h := md5.New()
 			h.Write(bs)
-			if err != nil {
-				log.Println(err)
-			}
+			hash = hex.EncodeToString(h.Sum(nil))
+		}
+		info, err := item.Info()
+		if err != nil {
+			return err
+		}
 
-			file := &app.File{
-				// UserId:    123456,
-				// Parent:    parentId,
-				Uuid:      uuid.New().String(),
-				Name:      item.Name(),
-				MimeType:  "",
-				Size:      info.Size(),
-				Hash:      hex.EncodeToString(h.Sum(nil)),
-				Key:       path + "/", // FIXME: path to key
-				Attr:      "",
-				FileCtime: info.ModTime().Unix(),
-				FileMtime: info.ModTime().Unix(),
-				Ctime:     ts,
-				Mtime:     ts,
-			}
-			if _, err := fs.CreateFile(file); err != nil {
-				log.Println(err)
-			}
+		// FIXME: UserId & ParentId
+		newPath := pathName + "/" + item.Name()
+		file := &app.File{
+			// UserId:    123456,
+			// Parent:    parentId,
+			Uuid:      uuid.New().String(),
+			Name:      item.Name(),
+			MimeType:  mimeType,
+			Size:      info.Size(),
+			Hash:      hash,
+			Key:       base64.RawURLEncoding.EncodeToString([]byte(newPath)),
+			Attr:      "",
+			FileCtime: info.ModTime(),
+			FileMtime: info.ModTime(),
+			Ctime:     tn,
+			Mtime:     tn,
+		}
+
+		res, err := fs.CreateFile(file)
+		if err != nil {
+			return err
+		}
+		if item.IsDir() {
+			id, _ := res.LastInsertId()
+			listFile(id, base, newPath)
 		}
 	}
 	return nil

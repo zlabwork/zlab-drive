@@ -3,6 +3,7 @@ package mysql
 import (
 	"app"
 	"database/sql"
+	"encoding/base64"
 )
 
 type FileService struct {
@@ -51,11 +52,17 @@ func (f *FileService) Files(parent int64) ([]*app.File, error) {
 }
 
 func (f *FileService) CreateFile(file *app.File) (sql.Result, error) {
-	stmt, err := f.H.Conn.Prepare("INSERT INTO `zd_files` (`uuid`, `name`, `mime`, `size`, `hash`, `key`, `attr`, `f_ctime`, `f_mtime`, `ctime`, `mtime`) VALUES (?,?,?,?,?,?,?,?,?,?,?)")
+
+	stmt, err := f.H.Conn.Prepare("INSERT INTO `zd_files` (`uuid`, `name`, `mime`, `size`, `hash`, `path`, `attr`, `f_ctime`, `f_mtime`, `ctime`, `mtime`) VALUES (?,?,?,?,?,?,?,?,?,?,?)")
 	if err != nil {
 		return nil, err
 	}
-	res, err := stmt.Exec(file.Uuid, file.Name, file.MimeType, file.Size, file.Hash, file.Key, file.Attr, file.FileCtime, file.FileMtime, file.Ctime, file.Mtime)
+	bs, err := base64.RawURLEncoding.DecodeString(file.Key)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := stmt.Exec(file.Uuid, file.Name, file.MimeType, file.Size, file.Hash, string(bs), file.Attr, file.FileCtime, file.FileMtime, file.Ctime, file.Mtime)
 	if err != nil {
 		return nil, err
 	}
