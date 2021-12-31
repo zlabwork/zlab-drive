@@ -2,7 +2,9 @@ package srv
 
 import (
 	"app"
-	"app/srv/fs"
+	"app/srv/drive/local"
+	"app/srv/drive/oss"
+	"app/srv/drive/s3"
 	"encoding/base64"
 	"fmt"
 	"os"
@@ -77,13 +79,13 @@ func NewFileService() (*FileService, error) {
 	switch appDrive {
 
 	case app.LocalDrive:
-		return &FileService{Repo: fs.NewLocalDrive()}, nil
+		return &FileService{Repo: local.NewDrive()}, nil
 
 	case app.S3Drive:
-		return &FileService{Repo: fs.NewS3Drive()}, nil
+		return &FileService{Repo: s3.NewDrive()}, nil
 
 	case app.OssDrive:
-		return &FileService{Repo: fs.NewOssDrive()}, nil
+		return &FileService{Repo: oss.NewDrive()}, nil
 
 	}
 

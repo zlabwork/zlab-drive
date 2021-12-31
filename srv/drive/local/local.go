@@ -1,4 +1,4 @@
-package fs
+package local
 
 import (
 	"app"
@@ -10,17 +10,17 @@ import (
 	"time"
 )
 
-type LocalDrive struct {
+type Drive struct {
 	Name string
 }
 
-func NewLocalDrive() *LocalDrive {
-	return &LocalDrive{
+func NewDrive() *Drive {
+	return &Drive{
 		Name: "Local File Drive",
 	}
 }
 
-func (loc *LocalDrive) Get(key string) (*app.File, error) {
+func (loc *Drive) Get(key string) (*app.File, error) {
 
 	dirName := utils.WorkDir("data")
 	f, err := os.Stat(dirName + key)
@@ -38,7 +38,7 @@ func (loc *LocalDrive) Get(key string) (*app.File, error) {
 	}, nil
 }
 
-func (loc *LocalDrive) List(key string, offset int, limit int) ([]*app.File, error) {
+func (loc *Drive) List(key string, offset int, limit int) ([]*app.File, error) {
 
 	if key == "/" {
 		key = ""
@@ -65,11 +65,11 @@ func (loc *LocalDrive) List(key string, offset int, limit int) ([]*app.File, err
 	return fs, nil
 }
 
-func (loc *LocalDrive) Create(file *app.File) error {
+func (loc *Drive) Create(file *app.File) error {
 	return nil
 }
 
-func (loc *LocalDrive) Delete(key string) error {
+func (loc *Drive) Delete(key string) error {
 
 	// TODO: clear cache
 	dirName := utils.WorkDir("data")
@@ -85,11 +85,11 @@ func (loc *LocalDrive) Delete(key string) error {
 	return nil
 }
 
-func (loc *LocalDrive) Modify(key string, newFile *app.File) error {
+func (loc *Drive) Modify(key string, newFile *app.File) error {
 	return nil
 }
 
-func (loc *LocalDrive) Bytes(file *app.File) ([]byte, error) {
+func (loc *Drive) Bytes(file *app.File) ([]byte, error) {
 	k, err := base64.RawURLEncoding.DecodeString(file.Key)
 	if err != nil {
 		return nil, err
