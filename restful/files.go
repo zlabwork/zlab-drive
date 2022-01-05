@@ -6,16 +6,21 @@ import (
 	"app/srv"
 	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
 )
 
 func FilesHandler(w http.ResponseWriter, r *http.Request) {
 
 	// decode
 	vars := mux.Vars(r)
-	key := vars["id"]
+	id, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		app.Response(w, msg.ErrParameter)
+		return
+	}
 
 	// fs & fetch
-	fs, err := srv.NewFileService()
+	fs, err := srv.NewRepoService()
 	if err != nil {
 		app.ResponseJson(w, app.JsonError{
 			Code:    msg.Err,
@@ -23,7 +28,7 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	data, err := fs.List(key, 0, 20) // TODO: offset & limit
+	data, err := fs.List(id, 0, 20) // TODO: offset & limit
 	if err != nil {
 		app.ResponseJson(w, app.JsonError{
 			Code:    msg.ErrNoData,

@@ -1,6 +1,9 @@
 package srv
 
-import "app"
+import (
+	"app"
+	"app/srv/repository/mysql"
+)
 
 type DbRepository interface {
 	Get(id int64) (*app.File, error)
@@ -37,4 +40,14 @@ func (rs *RepoService) Modify(file *app.File) error {
 
 func (rs *RepoService) List(parent int64, offset int, size int) ([]*app.File, error) {
 	return rs.Repo.List(parent, offset, size)
+}
+
+func NewRepoService() (*RepoService, error) {
+
+	fs, err := mysql.NewFileService()
+	if err != nil {
+		return nil, err
+	}
+
+	return &RepoService{Repo: fs}, nil
 }

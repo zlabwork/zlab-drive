@@ -18,7 +18,7 @@ func DoHandler(w http.ResponseWriter, r *http.Request) {
 	key := strings.TrimSpace(vars["id"])
 
 	// 2. adaptor
-	fs, err := srv.NewFileService()
+	fs, err := srv.NewDriveService()
 	if err != nil {
 		app.ResponseJson(w, app.JsonError{
 			Code:    msg.Err,

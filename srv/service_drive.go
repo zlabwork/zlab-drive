@@ -20,11 +20,11 @@ type FileRepository interface {
 	Bytes(file *app.File) ([]byte, error)
 }
 
-type FileService struct {
+type DriveService struct {
 	Repo FileRepository
 }
 
-func (fs *FileService) Get(key string) (*app.File, error) {
+func (fs *DriveService) Get(key string) (*app.File, error) {
 
 	id, err := base64.RawURLEncoding.DecodeString(key)
 	if err != nil {
@@ -33,7 +33,7 @@ func (fs *FileService) Get(key string) (*app.File, error) {
 	return fs.Repo.Get(string(id))
 }
 
-func (fs *FileService) List(key string, offset int, limit int) ([]*app.File, error) {
+func (fs *DriveService) List(key string, offset int, limit int) ([]*app.File, error) {
 
 	id := ""
 	if len(key) > 2 {
@@ -47,11 +47,11 @@ func (fs *FileService) List(key string, offset int, limit int) ([]*app.File, err
 	return fs.Repo.List(id, offset, limit)
 }
 
-func (fs *FileService) Create(file *app.File) error {
+func (fs *DriveService) Create(file *app.File) error {
 	return fs.Repo.Create(file)
 }
 
-func (fs *FileService) Delete(key string) error {
+func (fs *DriveService) Delete(key string) error {
 
 	id, err := base64.RawURLEncoding.DecodeString(key)
 	if err != nil {
@@ -61,15 +61,15 @@ func (fs *FileService) Delete(key string) error {
 	return fs.Repo.Delete(string(id))
 }
 
-func (fs *FileService) Modify(key string, newFile *app.File) error {
+func (fs *DriveService) Modify(key string, newFile *app.File) error {
 	return fs.Repo.Modify(key, newFile)
 }
 
-func (fs *FileService) Bytes(file *app.File) ([]byte, error) {
+func (fs *DriveService) Bytes(file *app.File) ([]byte, error) {
 	return fs.Repo.Bytes(file)
 }
 
-func NewFileService() (*FileService, error) {
+func NewDriveService() (*DriveService, error) {
 
 	appDrive, err := strconv.Atoi(os.Getenv("APP_DRIVE"))
 	if err != nil {
@@ -79,13 +79,13 @@ func NewFileService() (*FileService, error) {
 	switch appDrive {
 
 	case app.LocalDrive:
-		return &FileService{Repo: local.NewDrive()}, nil
+		return &DriveService{Repo: local.NewDrive()}, nil
 
 	case app.S3Drive:
-		return &FileService{Repo: s3.NewDrive()}, nil
+		return &DriveService{Repo: s3.NewDrive()}, nil
 
 	case app.OssDrive:
-		return &FileService{Repo: oss.NewDrive()}, nil
+		return &DriveService{Repo: oss.NewDrive()}, nil
 
 	}
 

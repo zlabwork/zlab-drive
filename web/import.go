@@ -98,12 +98,11 @@ func listFile(parentId int64, base, pathName string) error {
 			Mtime:     tn,
 		}
 
-		res, err := fs.CreateFile(file)
+		id, err := fs.Create(file)
 		if err != nil {
 			return err
 		}
 		if item.IsDir() {
-			id, _ := res.LastInsertId()
 			listFile(id, base, newPath)
 		}
 	}

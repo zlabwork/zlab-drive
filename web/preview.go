@@ -60,7 +60,7 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	if _, err := os.Stat(temp); err != nil {
 		if os.IsNotExist(err) {
 			// fetch from adaptor
-			fs, err := srv.NewFileService()
+			fs, err := srv.NewDriveService()
 			if err != nil {
 				return
 			}
