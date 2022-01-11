@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-type FileRepository interface {
+type DriveRepository interface {
 	Get(key string) (*app.File, error)
 	List(key string, offset int, limit int) ([]*app.File, error)
 	Create(file *app.File) error
@@ -21,7 +21,7 @@ type FileRepository interface {
 }
 
 type DriveService struct {
-	Repo FileRepository
+	Repo DriveRepository
 }
 
 func (fs *DriveService) Get(key string) (*app.File, error) {

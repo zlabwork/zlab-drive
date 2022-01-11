@@ -5,7 +5,7 @@ import (
 	"app/srv/repository/mysql"
 )
 
-type DbRepository interface {
+type FileRepository interface {
 	Get(id int64) (*app.File, error)
 	GetByUUID(uuid string) (*app.File, error)
 	Delete(id int64) error
@@ -14,40 +14,40 @@ type DbRepository interface {
 	List(parent int64, offset int, size int) ([]*app.File, error)
 }
 
-type RepoService struct {
-	Repo DbRepository
+type FileService struct {
+	Repo FileRepository
 }
 
-func (rs *RepoService) Get(id int64) (*app.File, error) {
+func (rs *FileService) Get(id int64) (*app.File, error) {
 	return rs.Repo.Get(id)
 }
 
-func (rs *RepoService) GetByUUID(uuid string) (*app.File, error) {
+func (rs *FileService) GetByUUID(uuid string) (*app.File, error) {
 	return rs.Repo.GetByUUID(uuid)
 }
 
-func (rs *RepoService) Delete(id int64) error {
+func (rs *FileService) Delete(id int64) error {
 	return rs.Repo.Delete(id)
 }
 
-func (rs *RepoService) Create(file *app.File) (int64, error) {
+func (rs *FileService) Create(file *app.File) (int64, error) {
 	return rs.Repo.Create(file)
 }
 
-func (rs *RepoService) Modify(file *app.File) error {
+func (rs *FileService) Modify(file *app.File) error {
 	return rs.Repo.Modify(file)
 }
 
-func (rs *RepoService) List(parent int64, offset int, size int) ([]*app.File, error) {
+func (rs *FileService) List(parent int64, offset int, size int) ([]*app.File, error) {
 	return rs.Repo.List(parent, offset, size)
 }
 
-func NewRepoService() (*RepoService, error) {
+func NewFileService() (*FileService, error) {
 
-	fs, err := mysql.NewFileService()
+	repo, err := mysql.NewFileRepository()
 	if err != nil {
 		return nil, err
 	}
 
-	return &RepoService{Repo: fs}, nil
+	return &FileService{Repo: repo}, nil
 }

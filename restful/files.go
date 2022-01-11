@@ -20,7 +20,7 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// fs & fetch
-	fs, err := srv.NewRepoService()
+	fs, err := srv.NewFileService()
 	if err != nil {
 		app.ResponseJson(w, app.JsonError{
 			Code:    msg.Err,

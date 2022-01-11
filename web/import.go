@@ -48,7 +48,7 @@ func listFile(parentId int64, base, pathName string) error {
 	}
 
 	// mysql conn
-	fs, err := mysql.NewFileService()
+	fs, err := mysql.NewFileRepository()
 	if err != nil {
 		return err
 	}

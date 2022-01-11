@@ -11,10 +11,10 @@ func getHandle() (*handle, error) {
 	return ConnectMySQL(dsn)
 }
 
-func NewFileService() (*FileService, error) {
+func NewFileRepository() (*FileRepository, error) {
 	h, err := getHandle()
 	if err != nil {
 		return nil, err
 	}
-	return &FileService{H: h}, nil
+	return &FileRepository{H: h}, nil
 }
