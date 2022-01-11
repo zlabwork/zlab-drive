@@ -5,7 +5,7 @@ import "fmt"
 const (
 	VersionName = "ZLab Drive"
 
-	VersionNumber = "0.1.0"
+	VersionNumber = "0.2.0"
 
 	Website = "https://zlab.dev"
 
