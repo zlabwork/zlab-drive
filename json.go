@@ -7,15 +7,15 @@ import (
 )
 
 type JsonOK struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Code    int
+	Message string
+	Data    interface{}
 }
 
 type JsonError struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Refer   string `json:"refer"`
+	Code    int
+	Message string
+	Refer   string
 }
 
 func ResponseJson(w http.ResponseWriter, data interface{}) {

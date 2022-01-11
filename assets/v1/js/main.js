@@ -96,17 +96,17 @@ class Breadcrumb extends React.Component {
     handleClick(uuid, event) {
         // path
         utilsBox.httpRequest("get", "/api/path/" + uuid).then((resp) => {
-            if (resp.status != 200 || resp.data.code != 200) {
+            if (resp.status != 200 || resp.data.Code != 200) {
                 return
             }
-            this.props.onSetState({local: resp.data.data});
+            this.props.onSetState({local: resp.data.Data});
         })
         // files
         utilsBox.httpRequest("get", "/api/files/" + uuid).then((resp) => {
-            if (resp.status != 200 || resp.data.code != 200) {
+            if (resp.status != 200 || resp.data.Code != 200) {
                 return
             }
-            this.props.onSetState({files: resp.data.data});
+            this.props.onSetState({files: resp.data.Data});
         })
     }
 
@@ -135,10 +135,10 @@ class FileView extends React.Component {
 
     componentDidMount() {
         utilsBox.httpRequest("get", "/api/files/0").then((resp) => {
-            if (resp.status != 200 || resp.data.code != 200) {
+            if (resp.status != 200 || resp.data.Code != 200) {
                 return
             }
-            this.handleChangeFiles(resp.data.data)
+            this.handleChangeFiles(resp.data.Data)
         })
     }
 
@@ -160,17 +160,17 @@ class FileView extends React.Component {
         }
         // files
         utilsBox.httpRequest("get", "/api/files/" + item.key).then((resp) => {
-            if (resp.status != 200 || resp.data.code != 200) {
+            if (resp.status != 200 || resp.data.Code != 200) {
                 return
             }
-            this.handleChangeFiles(resp.data.data)
+            this.handleChangeFiles(resp.data.Data)
         })
         // path
         // utilsBox.httpRequest("get", "/api/path/" + item.key).then((resp) => {
-        //     if (resp.status != 200 || resp.data.code != 200) {
+        //     if (resp.status != 200 || resp.data.Code != 200) {
         //         return
         //     }
-        //     this.handleChangePath(resp.data.data)
+        //     this.handleChangePath(resp.data.Data)
         // })
     }
 
@@ -178,15 +178,15 @@ class FileView extends React.Component {
         const element = this.props.files.map((item, index) =>
             <div className="col"
                  key={index}
-                 onClick={this.handleClick.bind(this, item.key)}
+                 onClick={this.handleClick.bind(this, item.Key)}
                  onDoubleClick={this.handleDoubleClick.bind(this, item)}>
                 <div className="card h-100">
-                    {item.mime == "folder" ?
-                        <img src={"/holder/200x150?text=" + item.name} className="card-img-top" alt="..."/>
-                        : <img src={"/preview/" + item.key} className="card-img-top" alt="..."/>
+                    {item.Mime == "folder" ?
+                        <img src={"/holder/200x150?text=" + item.Name} className="card-img-top" alt="..."/>
+                        : <img src={"/preview?key=" + item.Key} className="card-img-top" alt="..."/>
                     }
                     <div className="card-body">
-                        <p className="card-text text-truncate">{item.name}</p>
+                        <p className="card-text text-truncate">{item.Name}</p>
                     </div>
                 </div>
             </div>

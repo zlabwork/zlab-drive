@@ -6,10 +6,10 @@ import (
 	"app/utils"
 	"bytes"
 	"crypto/md5"
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"github.com/disintegration/gift"
-	"github.com/gorilla/mux"
 	"image"
 	_ "image/gif"
 	_ "image/jpeg"
@@ -30,16 +30,16 @@ const noPicture = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16
 // PreviewHandler TODO :: modify userId
 func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 
+	vars := r.URL.Query()
+	id := base64.RawURLEncoding.EncodeToString([]byte(vars.Get("key")))
+	name := strings.ToLower(vars.Get("name"))
+
 	// 1. key & hash
-	id := mux.Vars(r)["id"]
 	h := md5.New()
 	h.Write([]byte(id))
 	ha := hex.EncodeToString(h.Sum(nil))
 
 	// 2. width & height
-	vars := r.URL.Query()
-	name := strings.ToLower(vars.Get("name"))
-
 	var width, height int
 	var size = app.ImageSizeDefault
 	if name == "large" {
