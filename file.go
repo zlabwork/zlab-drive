@@ -3,12 +3,14 @@ package app
 import "time"
 
 type File struct {
+	Id        int64
 	Uuid      string
-	MimeType  string
+	Mime      string
 	Size      int64
 	Hash      string
-	Name      string
+	Parent    int64
 	Key       string
+	Name      string
 	Attr      string
 	FileCtime time.Time
 	FileMtime time.Time

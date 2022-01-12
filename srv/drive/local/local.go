@@ -29,7 +29,7 @@ func (loc *Drive) Get(key string) (*app.File, error) {
 	}
 
 	return &app.File{
-		MimeType:  "",
+		Mime:      "",
 		Hash:      "",
 		Key:       base64.RawURLEncoding.EncodeToString([]byte(key)),
 		Name:      f.Name(),
@@ -53,7 +53,7 @@ func (loc *Drive) List(key string, offset int, limit int) ([]*app.File, error) {
 			mime = "folder"
 		}
 		obj := &app.File{
-			MimeType:  mime,
+			Mime:      mime,
 			Hash:      "",
 			Key:       base64.RawURLEncoding.EncodeToString([]byte(key + "/" + f.Name())),
 			Name:      f.Name(),

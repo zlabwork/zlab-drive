@@ -87,7 +87,7 @@ func listFile(parentId int64, base, pathName string) error {
 			// Parent:    parentId,
 			Uuid:      uuid.New().String(),
 			Name:      item.Name(),
-			MimeType:  mimeType,
+			Mime:      mimeType,
 			Size:      info.Size(),
 			Hash:      hash,
 			Key:       base64.RawURLEncoding.EncodeToString([]byte(newPath)),
