@@ -3,6 +3,7 @@ package srv
 import (
 	"app"
 	"app/srv/repository/mysql"
+	"context"
 )
 
 type FileRepository interface {
@@ -11,10 +12,11 @@ type FileRepository interface {
 	Delete(id int64) error
 	Create(file *app.File) (int64, error)
 	Modify(file *app.File) error
-	List(parent int64, offset int, size int) ([]*app.File, error)
+	List(uid int64, parent int64, offset int, size int) ([]*app.File, error)
 }
 
 type FileService struct {
+	ctx  context.Context
 	Repo FileRepository
 }
 
@@ -39,15 +41,17 @@ func (rs *FileService) Modify(file *app.File) error {
 }
 
 func (rs *FileService) List(parent int64, offset int, size int) ([]*app.File, error) {
-	return rs.Repo.List(parent, offset, size)
+
+	uid := rs.ctx.Value(app.UserIdKey).(int64)
+	return rs.Repo.List(uid, parent, offset, size)
 }
 
-func NewFileService() (*FileService, error) {
+func NewFileService(ctx context.Context) (*FileService, error) {
 
 	repo, err := mysql.NewFileRepository()
 	if err != nil {
 		return nil, err
 	}
 
-	return &FileService{Repo: repo}, nil
+	return &FileService{ctx: ctx, Repo: repo}, nil
 }

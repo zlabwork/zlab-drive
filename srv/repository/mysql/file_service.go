@@ -60,9 +60,9 @@ func (f *FileRepository) Modify(file *app.File) error {
 	return fmt.Errorf("TODO implement")
 }
 
-func (f *FileRepository) List(parent int64, offset int, size int) ([]*app.File, error) {
+func (f *FileRepository) List(uid int64, parent int64, offset int, size int) ([]*app.File, error) {
 
-	rows, err := f.H.Conn.Query("SELECT `id`, `uuid`, `mime`, `size`, `parent`, `hash`, `key`, `name`, `attr`, `f_ctime`, `f_mtime`, `ctime`, `mtime` FROM `zd_files` WHERE `parent` = ? LIMIT ?,?", parent, offset, size)
+	rows, err := f.H.Conn.Query("SELECT `id`, `uuid`, `mime`, `size`, `parent`, `hash`, `key`, `name`, `attr`, `f_ctime`, `f_mtime`, `ctime`, `mtime` FROM `zd_files` WHERE `uid` = ? AND `parent` = ? LIMIT ?,?", uid, parent, offset, size)
 	if err != nil {
 		return nil, err
 	}
