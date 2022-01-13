@@ -6,7 +6,6 @@ import (
 	"app/utils"
 	"bytes"
 	"crypto/md5"
-	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"github.com/disintegration/gift"
@@ -31,12 +30,12 @@ const noPicture = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16
 func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 
 	vars := r.URL.Query()
-	id := base64.RawURLEncoding.EncodeToString([]byte(vars.Get("key")))
+	key := strings.TrimSpace(vars.Get("key"))
 	name := strings.ToLower(vars.Get("name"))
 
 	// 1. key & hash
 	h := md5.New()
-	h.Write([]byte(id))
+	h.Write([]byte(key))
 	ha := hex.EncodeToString(h.Sum(nil))
 
 	// 2. width & height
@@ -54,18 +53,18 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 3. cache name
 	suf := fmt.Sprintf("_%dx%d", width, height)
-	temp := utils.WorkDir("temp/"+os.Getenv("APP_DRIVE")+ha[:2]) + string(os.PathSeparator) + ha + suf
+	temp := utils.WorkDir("temp/"+os.Getenv("APP_DRIVE")+ha[:2]) + "/" + ha + suf
 
 	// 4. temp is not exist
 	if _, err := os.Stat(temp); err != nil {
 		if os.IsNotExist(err) {
 			// fetch from adaptor
-			fs, err := srv.NewDriveService()
+			fs, err := srv.NewDriveService(r.Context())
 			if err != nil {
 				return
 			}
 			// 1>. fetch
-			file, err := fs.Get(id)
+			file, err := fs.Get(key)
 			if err != nil {
 				w.Header().Set("Content-Type", "image/svg+xml")
 				w.Write([]byte(noPicture))
@@ -111,7 +110,7 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	// w.Header().Set("Last-Modified", "")
 	w.Header().Set("Cache-Control", "private, max-age=10800, pre-check=10800")
 	w.Header().Set("Content-type", "image/png")
-	w.Header().Set("ETag", id) // TODO: id need to modify
+	w.Header().Set("ETag", ha) // TODO: id need to modify
 	w.Header().Set("Expires", tf)
 	w.Header().Set("Date", tf)
 	w.Write(bs)

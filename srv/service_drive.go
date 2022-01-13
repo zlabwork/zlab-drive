@@ -5,7 +5,7 @@ import (
 	"app/srv/drive/local"
 	"app/srv/drive/oss"
 	"app/srv/drive/s3"
-	"encoding/base64"
+	"context"
 	"fmt"
 	"os"
 	"strconv"
@@ -26,25 +26,12 @@ type DriveService struct {
 
 func (fs *DriveService) Get(key string) (*app.File, error) {
 
-	id, err := base64.RawURLEncoding.DecodeString(key)
-	if err != nil {
-		return nil, err
-	}
-	return fs.Repo.Get(string(id))
+	return fs.Repo.Get(key)
 }
 
 func (fs *DriveService) List(key string, offset int, limit int) ([]*app.File, error) {
 
-	id := ""
-	if len(key) > 2 {
-		s, err := base64.RawURLEncoding.DecodeString(key)
-		if err != nil {
-			return nil, err
-		}
-		id = string(s)
-	}
-
-	return fs.Repo.List(id, offset, limit)
+	return fs.Repo.List(key, offset, limit)
 }
 
 func (fs *DriveService) Create(file *app.File) error {
@@ -53,12 +40,7 @@ func (fs *DriveService) Create(file *app.File) error {
 
 func (fs *DriveService) Delete(key string) error {
 
-	id, err := base64.RawURLEncoding.DecodeString(key)
-	if err != nil {
-		return err
-	}
-
-	return fs.Repo.Delete(string(id))
+	return fs.Repo.Delete(key)
 }
 
 func (fs *DriveService) Modify(key string, newFile *app.File) error {
@@ -69,7 +51,10 @@ func (fs *DriveService) Bytes(file *app.File) ([]byte, error) {
 	return fs.Repo.Bytes(file)
 }
 
-func NewDriveService() (*DriveService, error) {
+func NewDriveService(ctx context.Context) (*DriveService, error) {
+
+	uid := ctx.Value(app.UserIdKey).(int64)
+	namespace := strconv.FormatInt(uid, 10)
 
 	appDrive, err := strconv.Atoi(os.Getenv("APP_DRIVE"))
 	if err != nil {
@@ -79,13 +64,13 @@ func NewDriveService() (*DriveService, error) {
 	switch appDrive {
 
 	case app.LocalDrive:
-		return &DriveService{Repo: local.NewDrive()}, nil
+		return &DriveService{Repo: local.NewDrive(namespace)}, nil
 
 	case app.S3Drive:
-		return &DriveService{Repo: s3.NewDrive()}, nil
+		return &DriveService{Repo: s3.NewDrive(namespace)}, nil
 
 	case app.OssDrive:
-		return &DriveService{Repo: oss.NewDrive()}, nil
+		return &DriveService{Repo: oss.NewDrive(namespace)}, nil
 
 	}
 

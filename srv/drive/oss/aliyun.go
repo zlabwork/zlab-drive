@@ -3,12 +3,14 @@ package oss
 import "app"
 
 type Drive struct {
-	Name string
+	namespace string
+	Name      string
 }
 
-func NewDrive() *Drive {
+func NewDrive(namespace string) *Drive {
 	return &Drive{
-		Name: "AliYun OSS Drive",
+		namespace: namespace,
+		Name:      "AliYun OSS Drive",
 	}
 }
 

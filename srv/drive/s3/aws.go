@@ -3,12 +3,14 @@ package s3
 import "app"
 
 type Drive struct {
-	Name string
+	namespace string
+	Name      string
 }
 
-func NewDrive() *Drive {
+func NewDrive(namespace string) *Drive {
 	return &Drive{
-		Name: "Aws S3 Drive",
+		namespace: namespace,
+		Name:      "Aws S3 Drive",
 	}
 }
 

@@ -3,7 +3,6 @@ package local
 import (
 	"app"
 	"app/utils"
-	"encoding/base64"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -11,18 +10,20 @@ import (
 )
 
 type Drive struct {
-	Name string
+	namespace string
+	Name      string
 }
 
-func NewDrive() *Drive {
+func NewDrive(namespace string) *Drive {
 	return &Drive{
-		Name: "Local File Drive",
+		namespace: namespace,
+		Name:      "Local File Drive",
 	}
 }
 
 func (loc *Drive) Get(key string) (*app.File, error) {
 
-	dirName := utils.WorkDir("data")
+	dirName := loc.getDirData()
 	f, err := os.Stat(dirName + key)
 	if err != nil {
 		return nil, err
@@ -31,7 +32,7 @@ func (loc *Drive) Get(key string) (*app.File, error) {
 	return &app.File{
 		Mime:      "",
 		Hash:      "",
-		Key:       base64.RawURLEncoding.EncodeToString([]byte(key)),
+		Key:       key,
 		Name:      f.Name(),
 		Size:      f.Size(),
 		FileMtime: f.ModTime(), // TODO: file time
@@ -45,7 +46,7 @@ func (loc *Drive) List(key string, offset int, limit int) ([]*app.File, error) {
 	}
 
 	var fs []*app.File
-	dirName := utils.WorkDir("data")
+	dirName := loc.getDirData()
 	files, _ := ioutil.ReadDir(dirName + key)
 	for _, f := range files {
 		mime := ""
@@ -55,7 +56,7 @@ func (loc *Drive) List(key string, offset int, limit int) ([]*app.File, error) {
 		obj := &app.File{
 			Mime:      mime,
 			Hash:      "",
-			Key:       base64.RawURLEncoding.EncodeToString([]byte(key + "/" + f.Name())),
+			Key:       key + "/" + f.Name(),
 			Name:      f.Name(),
 			Size:      f.Size(),
 			FileMtime: f.ModTime(), // TODO: https://github.com/djherbis/times
@@ -72,8 +73,8 @@ func (loc *Drive) Create(file *app.File) error {
 func (loc *Drive) Delete(key string) error {
 
 	// TODO: clear cache
-	dirName := utils.WorkDir("data")
-	trash := utils.WorkDir("trash")
+	dirName := loc.getDirData()
+	trash := loc.getDirTrash()
 	path1 := dirName + key
 	path2 := trash + key + strconv.FormatInt(time.Now().UnixNano(), 10)
 
@@ -90,14 +91,19 @@ func (loc *Drive) Modify(key string, newFile *app.File) error {
 }
 
 func (loc *Drive) Bytes(file *app.File) ([]byte, error) {
-	k, err := base64.RawURLEncoding.DecodeString(file.Key)
-	if err != nil {
-		return nil, err
-	}
-	dirName := utils.WorkDir("data")
-	bs, err := os.ReadFile(dirName + string(k))
+
+	dirName := loc.getDirData()
+	bs, err := os.ReadFile(dirName + file.Key)
 	if err != nil {
 		return nil, err
 	}
 	return bs, nil
+}
+
+func (loc *Drive) getDirData() string {
+	return utils.WorkDir(loc.namespace + "/data/")
+}
+
+func (loc *Drive) getDirTrash() string {
+	return utils.WorkDir(loc.namespace + "/trash/")
 }
